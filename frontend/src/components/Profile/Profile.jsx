@@ -1,8 +1,11 @@
 import React from 'react'
+import { useState } from 'react';
+import { IoMdClose } from "react-icons/io";
 
 
-function Profile() {
-  const user = 2;
+
+export default function Profile() {
+  const user = 1;
   const profile = "https://i.pinimg.com/564x/3c/1c/73/3c1c7364ed3445e25235b032ebc1dfe5.jpg";
   const name = "Md Alkama";
   const email = "mdalkamadad@gmail.com";
@@ -12,13 +15,35 @@ function Profile() {
     degree: "B.Tech",
     field: "Computer Science Engineering",
     startYear: "2020",
-    endYear: "2024"
+    endYear: "2024",
+    location: "Patna, Bihar"
   }
+  const education2 = {
+    name: "Maulana Azad College Of Engineering And Technlogy",
+    degree: "B.Tech",
+    field: "Computer Science Engineering",
+    startYear: "2020",
+    endYear: "2022",
+    location: "Patna, Bihar"
+  }
+  const [isOpenEditProfile, setIsOpenEditProfile] = useState(false);
+  const [scroll, setScroll] = useState(true);
 
+    const scrollToggle = () => {
+      console.log(scroll)
+    setScroll(!scroll);
+  };
+
+  const openEditProfileToggle = () => {
+    console.log(isOpenEditProfile);
+    
+    setIsOpenEditProfile(!isOpenEditProfile);
+  }
+{ scroll ? document.body.style.overflow = "auto" : document.body.style.overflow = "hidden" }
 
 
   return (
-    <div className='mt-[68px] pt-4 flex h-[calc(100vh)] flex-col items-center justify-start'>
+    <div className='mt-[68px] pt-4 flex flex-col items-center justify-start'>
       {/* profile main */}
         <div id="profile-main" className='px-4 flex flex-col md:flex-row md:h-[200px] w-full md:w-[90%] justify-between items-center'>
           <div id='profile-and-info' className='flex md:h-full flex-col  md:flex-row justify-center items-center gap-4'>
@@ -29,17 +54,37 @@ function Profile() {
               <p className='font-semibold text-lg'>{email}</p>
             </div>
           </div>
+
           <div className='w-full md:w-[150px] flex justify-center items-center'>
             {
-              user === 1 ? <button className=' h-[50px] w-[90%] md:w-[150px] rounded-md mt-4  md:mt-0 bg-[#052E16] text-white'>Edit Profile</button> : user === 2 ? <button className=' h-[50px] w-[90%] md:w-[150px] rounded-md mt-4  md:mt-0 bg-[#0B65C2] text-white'>Connect</button> : <button className=' h-[50px] w-[90%] md:w-[150px] rounded-md mt-4  md:mt-0 bg-[#0FC206] text-white'>Send Message</button>
+              user === 1 
+              ? 
+              <button onClick={()=>{openEditProfileToggle(); setScroll(!scroll); }} className=' h-[50px] w-[90%] md:w-[150px] rounded-md mt-4  md:mt-0 bg-[#052E16] text-white'>Edit Profile</button> 
+              :
+              user === 2 
+              ? 
+              <button className=' h-[50px] w-[90%] md:w-[150px] rounded-md mt-4  md:mt-0 bg-[#0B65C2] text-white'>Connect</button> 
+              : 
+              <button className=' h-[50px] w-[90%] md:w-[150px] rounded-md mt-4  md:mt-0 bg-[#0FC206] text-white'>Send Message</button>
             }
           </div>
-          
-        </div>
 
+        </div>
+        {/* education section */}
         <Education education = {education} education1 = {education1} />
-        
-        
+
+        {/* education section */}
+        <Education education = {education} education1 = {education1} />
+
+        {/* edit profile popup */}
+        {
+        isOpenEditProfile 
+        ? 
+        <EditProfile scrollToggle = {scrollToggle} openEditProfileToggle = {openEditProfileToggle} /> 
+        : 
+        null
+        }
+
     </div>
   )
 }
@@ -64,6 +109,7 @@ const education1 = props.education1;
             <p className='font-bold text-sm md:text-xl'>{education1.name}</p>
             <p className='font-semibold text-xs md:text-lg'> {education1.degree} - {education1.field}</p>
             <p className='font-semibold text-sm md:text-lg'>{education1.startYear} - {education1.endYear}</p>
+            <p className='font-semibold text-sm md:text-lg text-[#616161]'>{education1.location}</p>
           </div>
         </div>
         :
@@ -75,4 +121,162 @@ const education1 = props.education1;
 }
 
 
-export default Profile
+function EditProfile (props){
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [phone, setPhone] = useState('');
+  const [age, setAge] = useState('');
+  const [gender, setGender] = useState('');
+  const [location, setLocation] = useState('');
+
+  const submitHandler = async (e) => {
+    e.preventDefault();
+
+    const userData = { name, email, phone, age, gender, location};
+
+    try {
+      const response = await fetch('http://127.0.0.1:5000/editprofile', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      });
+
+      const result = await response.json();
+      if (response.ok) {
+        alert('Profile saved successfully!');
+        setName('');
+        setEmail('');
+        setPhone('');
+        setAge('');
+        setGender('');
+        setLocation('');
+      } else {
+        alert(result.error || 'Saving failed');
+      }
+    } catch (error) {
+      alert('An error occurred: ' + error.message);
+    }
+  };
+
+  return(
+    <div className='w-full h-[100vh] absolute top-0 left-0 bg-[#0000005a] flex justify-center items-center z-[100]'>
+      <div className='w-full  md:w-[50%] z-[120] bg-white absolute md:top-[50%] md:left-[50%] md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-xl border-[1px] border-[#5d5d5d] flex flex-col justify-start items-center shadow-lg'>
+        <button className=' absolute top-0 right-0 h-[65px] w-[65px] rounded-tr-xl text-3xl flex justify-center items-center' onClick = {()=>{
+          props.scrollToggle();
+          props.openEditProfileToggle();
+          console.log('clicked')
+          }}><IoMdClose />
+        </button>
+        <p className='w-full h-[50px] pl-4 text-2xl font-bold mt-[15px] border-b-[1px] border-[#5d5d5d]'>Edit Profile</p>
+
+    <form 
+        onSubmit={(e) => {
+        submitHandler(e);
+      }}
+      action='/register'
+      method='post'
+      className='my-8 md:flex flex-col items-center justify-start grow h-[100%] w-[90%]'
+      >
+                  {/* name input box */}
+                  <div className='flex flex-col w-[100%] '>
+                    <label htmlFor="name" className='text-s font-normal'> Full Name</label>
+                    <input
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                      }}
+                      required
+                      type="text"
+                      id='name'
+                      name='name'
+                      placeholder='Full Name'
+                      className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
+                  </div>
+          
+          
+                  {/* email input box */}
+                  <div className='flex flex-col w-[100%] mt-4'>
+                    <label htmlFor="signUpEmail" className='text-s font-normal'> Email </label>
+                    <input
+                      value={email}
+                      onChange={(e) => {
+                        setEmail(e.target.value);
+                      }}
+                      required
+                      type="email"
+                      id='signUpEmail'
+                      name='email'
+                      placeholder='Email' className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
+                  </div>
+          
+                  {/* phone input box */}
+                  <div className='flex flex-col w-[100%] mt-4'>
+                    <label htmlFor="phone" className='text-s font-normal'> Phone Number</label>
+                    <input
+                      value={phone}
+                      onChange={(e) => {
+                        setPhone(e.target.value);
+                      }}
+                      required
+                      type="number"
+                      id='phone'
+                      name='phone'
+                      placeholder='Phone Number'
+                      className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
+                  </div>
+
+                  {/* age input box */}
+                  <div className='flex flex-col w-[100%] mt-4'>
+                    <label htmlFor="age" className='text-s font-normal'> Age</label>
+                    <input
+                      value={age}
+                      onChange={(e) => {
+                        setAge(e.target.value);
+                      }}
+                      required
+                      type="number"
+                      id='age'
+                      name='age'
+                      placeholder='Age'
+                      className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
+                  </div>
+
+                  {/* gender input box */}
+                  <div className='flex flex-col w-[100%] mt-4'>
+                    <label htmlFor="gender" className='text-s font-normal'>Gender</label>
+                    <select name="gender" id="gender" className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900'>
+                      <option value="select Gender">Select Gender</option>
+                      <option value="male">Male</option>
+                      <option value="female">Female</option>
+                      <option value="other">Other</option>
+                    </select>
+                  </div>
+
+                {/* name input box */}
+                  <div className='flex flex-col w-[100%] mt-4'>
+                    <label htmlFor="name" className='text-s font-normal'> Full Name</label>
+                    <input
+                      value={name}
+                      onChange={(e) => {
+                        setName(e.target.value);
+                      }}
+                      required
+                      type="text"
+                      id='name'
+                      name='name'
+                      placeholder='Full Name'
+                      className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
+                  </div>
+
+                  {/* save button */}
+                  <button type='submit' className='mt-8 bg-green-950 text-white p-2 w-[100%] rounded-xl font-normal' onClick={submitHandler}>Save Changes</button>
+    </form>
+
+
+      </div>
+    </div>
+    
+  )
+}
