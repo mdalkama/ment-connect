@@ -8,6 +8,10 @@ from flask_login import LoginManager
 from flask_login import login_required
 from flask_login import login_user
 from flask_login import UserMixin
+from flask_login import current_user
+from flask_login import logout_user
+
+
 
 
 app = Flask(__name__)
@@ -75,7 +79,7 @@ def register():
             phone=data['phone'],
             year=data['year'],
             branch=data['branch'],
-            password=hashed_password  # Now password is hashed
+            password=hashed_password  
         )
 
         # Process tags
@@ -117,7 +121,7 @@ def login():
     user = User.query.filter_by(email=data['email']).first()
 
     if user and bcrypt.check_password_hash(user.password, data['password']):
-        login_user(user)
+        login_user(user, remember=True)
         return jsonify({
             "message": "Login successful!",
             "user": {
@@ -133,16 +137,23 @@ def login():
 @app.route('/dashboard')
 @login_required
 def dashboard():
-    return f'Welcome {current_user.name}! <a href="/logout">Logout</a>'
+    return jsonify({
+        "message": "Welcome to your dashboard!",
+        "user": {
+            "id": current_user.id,
+            "name": current_user.name,
+            "email": current_user.email
+        }
+    }), 200
 
 # Route for Logout
-@app.route('/logout')
+@app.route('/logout', methods=['GET', 'POST'])
 @login_required
 def logout():
+    if not current_user.is_authenticated:
+        return jsonify({"error": "Not logged in"}), 401
     logout_user()
-    flash('Logged out successfully!', 'info')
-    return redirect(url_for('login'))
-
+    return jsonify({"message": "Logged out successfully"}), 200
 
 
 
