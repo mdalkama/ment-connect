@@ -1,5 +1,5 @@
 import React from 'react'
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { BiShow } from "react-icons/bi";
 import { BiHide } from "react-icons/bi";
 
@@ -12,8 +12,6 @@ export default function SignupForm(props) {
   const [endYear, setEndYear] = useState('');
   const [branch, setBranch] = useState('');
   const [password, setPassword] = useState('');
-  const [rollPre, setRollPre] = useState('');
-  const [rollPost, setRollPost] = useState('');
 
 
   const submitHandler = async (e) => {
@@ -36,8 +34,8 @@ export default function SignupForm(props) {
         setName('');
         setEmail('');
         setPhone('');
-        setEndYear('');
         setStartYear('');
+        setEndYear('');
         setBranch('');
         setPassword('');
       } else {
