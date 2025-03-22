@@ -8,16 +8,13 @@ export default function SignupForm(props) {
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
-  const [startYear, setStartYear] = useState('');
-  const [endYear, setEndYear] = useState('');
-  const [branch, setBranch] = useState('');
   const [password, setPassword] = useState('');
 
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    const userData = { name, email, phone, startYear, endYear, branch, password };
+    const userData = { name, email, phone, password };
 
     try {
       const response = await fetch('http://127.0.0.1:5000/register', {
@@ -34,9 +31,6 @@ export default function SignupForm(props) {
         setName('');
         setEmail('');
         setPhone('');
-        setStartYear('');
-        setEndYear('');
-        setBranch('');
         setPassword('');
       } else {
         alert(result.error || 'Registration failed');
@@ -112,119 +106,7 @@ export default function SignupForm(props) {
             placeholder='Phone Number'
             className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
         </div>
-
-        <div className='w-full flex gap-[4%]'>
-
-          {/* start year input box */}
-          <div className='flex flex-col w-1/2 mt-4'>
-            <label htmlFor="year" className='text-s font-normal'> Session Start </label>
-            <select
-              name="startYear"
-              id="startYear"
-              value={startYear}
-              onChange={(e) => {
-                setStartYear(e.target.value);
-              }}
-              className='h-[42px] bg-white border-[1px] bg-transparent border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900'>
-              <option value="">Select Year</option>
-              <option value="2000">2000</option>
-              <option value="2001">2001</option>
-              <option value="2002">2002</option>
-              <option value="2003">2003</option>
-              <option value="2004">2004</option>
-              <option value="2005">2005</option>
-              <option value="2006">2006</option>
-              <option value="2007">2007</option>
-              <option value="2008">2008</option>
-              <option value="2009">2009</option>
-              <option value="2010">2010</option>
-              <option value="2011">2011</option>
-              <option value="2012">2012</option>
-              <option value="2013">2013</option>
-              <option value="2014">2014</option>
-              <option value="2015">2015</option>
-              <option value="2016">2016</option>
-              <option value="2017">2017</option>
-              <option value="2018">2018</option>
-              <option value="2019">2019</option>
-              <option value="2020">2020</option>
-              <option value="2021">2021</option>
-              <option value="2022">2022</option>
-              <option value="2023">2023</option>
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
-            </select>
-          </div>
-
-          {/* end year input box */}
-          <div className='flex flex-col w-1/2 mt-4'>
-            <label htmlFor="year" className='text-s font-normal'> Passing Year</label>
-            <select
-              name="endYear"
-              id="endYear"
-              value={endYear}
-              onChange={(e) => {
-                setEndYear(e.target.value);
-              }}
-              className='h-[42px] bg-white border-[1px] bg-transparent border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900'>
-              <option value="">Select Year</option>
-              <option value="2000">2000</option>
-              <option value="2001">2001</option>
-              <option value="2002">2002</option>
-              <option value="2003">2003</option>
-              <option value="2004">2004</option>
-              <option value="2005">2005</option>
-              <option value="2006">2006</option>
-              <option value="2007">2007</option>
-              <option value="2008">2008</option>
-              <option value="2009">2009</option>
-              <option value="2010">2010</option>
-              <option value="2011">2011</option>
-              <option value="2012">2012</option>
-              <option value="2013">2013</option>
-              <option value="2014">2014</option>
-              <option value="2015">2015</option>
-              <option value="2016">2016</option>
-              <option value="2017">2017</option>
-              <option value="2018">2018</option>
-              <option value="2019">2019</option>
-              <option value="2020">2020</option>
-              <option value="2021">2021</option>
-              <option value="2022">2022</option>
-              <option value="2023">2023</option>
-              <option value="2024">2024</option>
-              <option value="2025">2025</option>
-              <option value="2026">2026</option>
-              <option value="2027">2027</option>
-              <option value="2028">2028</option>
-              <option value="2029">2029</option>
-            </select>
-          </div>
-
-        </div>
-
-        {/* Branch input box */}
-        <div className='flex flex-col w-[100%] mt-4'>
-          <label htmlFor="branch" className='text-s font-normal'> Branch </label>
-          <select
-            name="branch"
-            id="branch"
-            value={branch}
-            onChange={(e) => {
-              setBranch(e.target.value);
-            }}
-            className='h-[42px] bg-white border-[1px] bg-transparent border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900'>
-            <option value="">Select Branch</option>
-            <option value="B.TECH IN CSE ( CORE )">B.TECH IN CSE ( CORE )</option>
-            <option value="B.TECH IN CSE ( AI & ML )">B.TECH IN CSE ( AI & ML )</option>
-            <option value="B.TECH IN CSE ( DS )">B.TECH IN CSE ( DS )</option>
-            <option value="B.TECH IN CIVIL">BTECH IN CIVIL</option>
-            <option value="B.TECH IN EEE">B.TECH IN EEE</option>
-            <option value="DIPLOMA IN CSE">DIPLOMA IN CSE</option>
-            <option value="DIPLOMA IN CIVIL">DIPLOMA IN CIVIL</option>
-            <option value="DIPLOMA IN EEE">DIPLOMA IN EEE</option>
-          </select>
-        </div>
+        
 
         {/* password input box */}
         <div className='flex flex-col mt-4'>
