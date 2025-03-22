@@ -43,8 +43,6 @@ class User(db.Model, UserMixin):
     name = db.Column(db.String(100), nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
     phone = db.Column(db.String(12), nullable=False)
-    year = db.Column(db.String(10), nullable=False)  # Added year field
-    branch = db.Column(db.String(50), nullable=False)  # Added branch field
     password = db.Column(db.String(255), nullable=False)  # Hashed Password
     tags = relationship('Tag', secondary=user_tags, back_populates='users', lazy='dynamic')
 
@@ -64,21 +62,19 @@ with app.app_context():
 def register():
     data = request.json
     try:
-
         existing_user = User.query.filter(
             (User.email == data['email']) | (User.phone == data['phone'])
         ).first()
         
         if existing_user:
             return jsonify({"error": "User with this email or phone already exists"}), 400
+        
         hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
 
         new_user = User(
             name=data['name'],
             email=data['email'],
             phone=data['phone'],
-            year=data['year'],
-            branch=data['branch'],
             password=hashed_password  
         )
 
