@@ -9,7 +9,7 @@ function Navbar() {
   // const [showAccountMenu, setShowAccountMenu] = useState(false);
   const location = useLocation();
   const role = "student"; // This should be dynamically set based on user role
-  const [user, setUser ] = useState(null); // This should be dynamically set based on user authentication
+  const [user, setUser ] = useState(1); // This should be dynamically set based on user authentication
   const isActiveLink = (path) => {
     return location.pathname === path ? 'text-[#131417] bg-[#F6F6F6] rounded-md px-3 py-2' : 'text-[#6F757A]';
   };
