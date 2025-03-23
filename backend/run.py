@@ -17,7 +17,7 @@ from flask_login import logout_user
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.urandom(24).hex()
-CORS(app)
+CORS(app, )
 login_manager = LoginManager()
 login_manager.init_app(app)
 
@@ -73,6 +73,7 @@ def register():
 
         new_user = User(
             name=data['name'],
+            role = data['role'],
             email=data['email'],
             phone=data['phone'],
             password=hashed_password  
