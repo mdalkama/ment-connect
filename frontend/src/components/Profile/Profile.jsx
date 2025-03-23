@@ -321,12 +321,6 @@ const education1 = props.education1;
 )
 }
 
-// function EditEducation (props){
-//   return(
-//     <p>hellow</p>
-//   )
-// }
-
 function Skills (props){
   return(
     <div className='mt-10 pt-1 md:pt-4 pl-4 w-[100%] md:w-[90%] gap:1 md:gap-4 md:rounded-lg  bg-[white] border-[1px] border-[#5d5d5d] flex flex-col justify-start items-center'>

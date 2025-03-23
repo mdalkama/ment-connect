@@ -27,6 +27,8 @@ export default function LoginForm(props) {
       });
   
       const data = await response.json();  
+      console.log('Response:', response);
+      localStorage.setItem('realuser', JSON.stringify(data.user));
       console.log('API Response:', data);  
   
       if (data.success) {
