@@ -9,14 +9,33 @@ function Navbar() {
   // const [showAccountMenu, setShowAccountMenu] = useState(false);
   const location = useLocation();
   const role = "student"; // This should be dynamically set based on user role
-  const [user, setUser ] = useState(1); // This should be dynamically set based on user authentication
+  const [user, setUser ] = useState(null); // This should be dynamically set based on user authentication
   const isActiveLink = (path) => {
     return location.pathname === path ? 'text-[#131417] bg-[#F6F6F6] rounded-md px-3 py-2' : 'text-[#6F757A]';
   };
 
-  const logout = () =>{
-    setUser(null);
-  }
+const handleLogout = async () => {
+    try {
+        const response = await fetch("http://127.0.0.1:5000/logout", {
+            method: "POST",  // Correct method
+            credentials: "include",  // Ensures session cookies are sent
+            headers: {
+                "Content-Type": "application/json"
+            }
+        });
+
+        const data = await response.json();
+        if (response.ok) {
+            alert(data.message); // Show success message
+            // Redirect user to login or update UI
+        } else {
+            alert(data.error); // Show error message
+        }
+    } catch (error) {
+        console.error("Logout failed:", error);
+    }
+};
+
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
@@ -49,7 +68,7 @@ function Navbar() {
             }
             {
               user
-              ? <li><Link to="/login" onClick = { logout}  className={`font-[400] ${isActiveLink('/login')}`}>Logout</Link></li>
+              ? <li><Link to="/logout" onClick = { handleLogout}  className={`font-[400] ${isActiveLink('/logout')}`}>Logout</Link></li>
               : null
             }
           </ul>
@@ -76,7 +95,7 @@ function Navbar() {
             {
               user
               ? 
-              <li className='py-2 pb-6 font-[400] text-l pt-5'><Link to="/login" onClick={()=>{toggleMenu(); logout()}} className={isActiveLink('/login')}>Logout</Link></li> 
+              <li className='py-2 pb-6 font-[400] text-l pt-5'><Link to="/login" onClick={()=>{toggleMenu(); handleLogout()}} className={isActiveLink('/login')}>Logout</Link></li> 
               : null
             }
 
