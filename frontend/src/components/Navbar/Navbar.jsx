@@ -11,7 +11,7 @@ function Navbar() {
   const role = "student"; // This should be dynamically set based on user role
   const [user, setUser ] = useState(1); // This should be dynamically set based on user authentication
   const isActiveLink = (path) => {
-    return location.pathname === path ? 'text-[#131417] bg-[#F6F6F6] rounded-md px-3 py-2' : 'text-[#6F757A]';
+    return location.pathname === path ? 'text-[#131417] bg-[#F5DEB3] rounded-md px-3 py-2' : 'text-[#6F757A]';
   };
 
 const handleLogout = async () => {
@@ -42,10 +42,10 @@ const handleLogout = async () => {
 
   return (
     <div className='relative z-50'>
-      <div className='h-[68px] flex justify-between items-center p-4 bg-[#ffffff] text-[#131417] fixed top-0 right-0 z-99 w-full border-b border-gray-400'>
+      <div className='h-[68px] flex justify-between items-center p-4 bg-[#F8F5F1] text-[#131417] fixed top-0 right-0 z-99 w-full border-b border-gray-400'>
         <div className='flex items-center gap-3'>
           {isOpen ? <RxCross2 className='md:hidden cursor-pointer text-2xl' onClick={toggleMenu} /> : <RxHamburgerMenu className='md:hidden cursor-pointer text-2xl' onClick={toggleMenu} />}
-          <Link to="/" className='text-2xl font-[400]'>Ment Connect</Link>
+          <Link to="/" className='text-2xl font-bold'>Ment Connect</Link>
         </div>
         <div className='flex items-center gap-7'>
           {/* Desktop Menu */}
@@ -55,7 +55,7 @@ const handleLogout = async () => {
             role === "mentor" ?
             <li><Link to="/mentees" className={`font-[400] ${isActiveLink('/mentees')}`}>Mentees</Link></li> 
             :
-            role === "student" ? <li><Link to="/mentors" className={`font-[400] ${isActiveLink('/about')}`}>Mentors</Link></li>
+            role === "student" ? <li><Link to="/mentors" className={`font-[400] ${isActiveLink('/mentors')}`}>Mentors</Link></li>
             : null}
             <li><Link to="/message" className={`font-[400] ${isActiveLink('/message')}`}>Message</Link></li>
             <li><Link to="/contact" className={`font-[400] ${isActiveLink('/contact')}`}>Contact</Link></li>
