@@ -2,7 +2,7 @@ import React from 'react'
 
 function Footer() {
   return (
-    <div className='p-4 bg-gray-900 text-gray-400'>Footer</div>
+    <div className='w-full h-[120px] bg-gray-900 text-white py-4 mt-4 flex justify-center items-center'>Ment Connect © 2025</div>
   )
 }
 

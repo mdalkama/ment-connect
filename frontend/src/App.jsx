@@ -10,7 +10,7 @@ import Contact from "./components/Contact/Contact";
 import LoginPage from "./components/LoginPage/LoginPage";
 import Message from "./components/Message/Message";
 import Profile from "./components/Profile/Profile";
-// import Footer from "./components/Footer/Footer";
+import Footer from "./components/Footer/Footer";
 
 function App() {
   const [data, setData] = useState("");
@@ -33,7 +33,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>
-        {/* <Footer /> */}
+        <Footer />
       </Router>
     </div>
   );
