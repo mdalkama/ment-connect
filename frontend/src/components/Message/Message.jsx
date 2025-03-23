@@ -35,7 +35,7 @@ function Message() {
       {selectedChat && (
         <div id="chat" className='w-[100%] md:w-[calc(100%_-_400px)] min-h-[calc(100vh_-_68px)] flex flex-col h-[100%] border-[1px] border-gray-300 bg-white'>
           <div className='border-b-[1px] border-[#646464] text-[black] h-[60px] w-[100%] flex justify-start items-center px-4'>
-            <IoIosArrowRoundBack className='w-[46px] h-[46px] cursor-pointer mr-4' onClick={() => setSelectedChat(null)} />
+            <IoIosArrowRoundBack className=' md:hidden w-[46px] h-[46px] cursor-pointer mr-4' onClick={() => setSelectedChat(null)} />
             <div>
               <p className='text-[16px] font-bold'>{selectedChat.name}</p>
               <p className='text-[12px] font-normal'>Last seen {selectedChat.lastSeen}</p>
