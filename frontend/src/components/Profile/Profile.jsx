@@ -18,14 +18,6 @@ export default function Profile() {
     endYear: "2024",
     location: "Patna, Bihar"
   }
-  const education2 = {
-    name: "Maulana Azad College Of Engineering And Technlogy",
-    degree: "B.Tech",
-    field: "Computer Science Engineering",
-    startYear: "2020",
-    endYear: "2022",
-    location: "Patna, Bihar"
-  }
   const [isOpenEditProfile, setIsOpenEditProfile] = useState(false);
   const [scroll, setScroll] = useState(true);
 

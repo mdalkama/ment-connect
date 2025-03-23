@@ -4,13 +4,12 @@ import axios from "axios";
 
 import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/Home";
-import About from "./components/About/About";
+import Mentors from "./components/Mentors/Mentors";
+import Mentees from "./components/Mentees/Mentees";
 import Contact from "./components/Contact/Contact";
 import LoginPage from "./components/LoginPage/LoginPage";
-import Mission from "./components/Mission/Mission";
-import Developer from "./components/Developer/Developer";
+import Message from "./components/Message/Message";
 import Profile from "./components/Profile/Profile";
-import Verify from "./components/Verify/Verify";
 // import Footer from "./components/Footer/Footer";
 
 function App() {
@@ -28,13 +27,11 @@ function App() {
         <Navbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/about" element={<About />} />
-          <Route path="/mission" element={<Mission />} />
-          <Route path="/developer" element={<Developer />} />
+          <Route path="/mentors" element={<Mentors />} />
+          <Route path="/mentees" element={<Mentees />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<Profile />} />
-          <Route path="/verify" element={<Verify />} />
         </Routes>
         {/* <Footer /> */}
       </Router>

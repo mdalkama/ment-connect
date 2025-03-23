@@ -9,12 +9,14 @@ export default function SignupForm(props) {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
+  const [role, setRole] = useState(' mentor');
+
 
 
   const submitHandler = async (e) => {
     e.preventDefault();
 
-    const userData = { name, email, phone, password };
+    const userData = {role, name, email, phone, password };
 
     try {
       const response = await fetch('http://127.0.0.1:5000/register', {
@@ -28,6 +30,7 @@ export default function SignupForm(props) {
       const result = await response.json();
       if (response.ok) {
         alert('User registered successfully!');
+        setRole('');
         setName('');
         setEmail('');
         setPhone('');
@@ -59,8 +62,20 @@ export default function SignupForm(props) {
       {/* signup data */}
       <div className='w-[100%] mt-6'>
 
+         {/* Mentor Mentee select */}
+        <div className='flex flex-col w-[100%]'>
+          <label htmlFor="role" className='text-s font-normal'> Select Role</label>
+          <select className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' name="role" id="role">
+            onChange={(e) => {
+              setRole(e.target.value);
+            }}
+            <option value="mentor">Mentor</option>
+            <option value="student">Student</option>
+          </select>
+        </div>
+
         {/* name input box */}
-        <div className='flex flex-col w-[100%] '>
+        <div className='flex flex-col w-[100%] mt-4'>
           <label htmlFor="name" className='text-s font-normal'> Full Name</label>
           <input
             value={name}
@@ -127,6 +142,8 @@ export default function SignupForm(props) {
             </div>
           </div>
         </div>
+
+
 
 
         {/* signup button */}
