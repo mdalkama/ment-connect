@@ -10,9 +10,14 @@ function Message() {
 
   const chatsData = {
     0: { id: 0, name: 'Md Alkama', lastSeen: '1 min ago', image: 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=2725&auto=format&fit=crop' },
-    1: { id: 1, name: 'Mohammad Zaid Khan', lastSeen: '1 hour ago', image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2960&auto=format&fit=crop' },
-    2: { id: 2, name: 'Shivangi Gupta', lastSeen: '2 hours ago', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=3087&auto=format&fit=crop' },
-    3: { id: 3, name: 'Md Al Fahad Ahmad', lastSeen: '8 hours ago', image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2960&auto=format&fit=crop' }
+    1: { id: 1, name: 'Mohammad Zaid Khan', lastSeen: '2 min ago', image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2960&auto=format&fit=crop' },
+    2: { id: 2, name: 'Shivangi Gupta', lastSeen: '3 mins ago', image: 'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?q=80&w=3087&auto=format&fit=crop' },
+    3: { id: 3, name: 'Md Al Fahad Ahmad', lastSeen: '5 mins ago', image: 'https://images.unsplash.com/photo-1633332755192-727a05c4013d?q=80&w=2960&auto=format&fit=crop' },
+    4:{ id: 4, name: 'Amir Siddiqui', lastSeen: '20 mins ago', image: 'https://images.unsplash.com/photo-1544723795-3fb6469f5b39?q=80&w=2732&auto=format&fit=crop' },
+    5:{ id: 5, name: 'Priya Sharma', lastSeen: '30 mins ago', image: 'https://images.unsplash.com/photo-1511485977113-f34c92461ad9?q=80&w=2760&auto=format&fit=crop' },
+    6:{ id: 6, name: 'Rahul Verma', lastSeen: '3 hours ago', image: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?q=80&w=2760&auto=format&fit=crop' },
+    7:{ id: 7, name: 'Ankit Raj', lastSeen: '6 hours ago', image: 'https://images.unsplash.com/photo-1521119989659-a83eee488004?q=80&w=2732&auto=format&fit=crop' },
+    8:{ id: 8, name: 'Sneha Kumari', lastSeen: '12 hours ago', image: 'https://images.unsplash.com/photo-1554151228-14d9def656e4?q=80&w=2732&auto=format&fit=crop' }
   };
 
   const chats = Object.values(chatsData);
