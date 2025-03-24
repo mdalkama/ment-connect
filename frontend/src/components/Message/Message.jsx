@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import { IoIosArrowRoundBack } from "react-icons/io";
+import { ToastContainer, toast } from 'react-toastify';
+
 
 function Message() {
   const [selectedChat, setSelectedChat] = useState(null);
@@ -59,13 +61,28 @@ function Message() {
               placeholder="Write a message..." 
               value={message}
               onChange={(e) => setMessage(e.target.value)}
+              onKeyDown={e => e.key === 'Enter' ? handleSendMessage()
+                : null
+              }
             ></textarea>
             <button 
               className='bg-black text-white h-[100%] w-[100px]' 
-              onClick={handleSendMessage}
+              onClick={()=>{
+                handleSendMessage();
+                toast.success("Message Sent!", {
+                  position: "top-right",
+                  autoClose: 2000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                });
+              }}
             >
               Send
             </button>
+            <ToastContainer />
           </div>
         </div>
         :
