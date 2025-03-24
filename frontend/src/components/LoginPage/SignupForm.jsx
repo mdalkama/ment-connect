@@ -1,7 +1,11 @@
-import React from 'react'
-import { useState } from 'react';
-import { BiShow } from "react-icons/bi";
-import { BiHide } from "react-icons/bi";
+import React, { useState } from 'react';
+import { BiShow, BiHide } from "react-icons/bi";
+import { createUserWithEmailAndPassword,signOut } from "firebase/auth";
+import { auth, db } from "../../firebase";
+import { useNavigate } from "react-router-dom";
+import { doc, setDoc } from "firebase/firestore";  // Import Firestore
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function SignupForm(props) {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,79 +13,95 @@ export default function SignupForm(props) {
   const [email, setEmail] = useState('');
   const [phone, setPhone] = useState('');
   const [password, setPassword] = useState('');
-  const [role, setRole] = useState(' mentor');
+  const [role, setRole] = useState('mentor');
+  const navigate = useNavigate();
+  
 
-
-
-  const submitHandler = async (e) => {
+    const handleSignup = async (e) => {
     e.preventDefault();
-
-    const userData = {role, name, email, phone, password };
-
+    
     try {
-      const response = await fetch('http://127.0.0.1:5000/register', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
+      // Create user in Firebase Authentication
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+
+      // Store user data in Firestore
+      await setDoc(doc(db, "users", user.uid), {
+        userid: user.uid,
+        name: name,
+        email: email,
+        phone: phone,
+        role: role,
+        profile: "",
+        location: "",
+        gender: "",
+        age:"",
+        skills: [],
+        education: {
+          name: "",
+          degree: "",
+          field:"",
+          startYear:"",
+          endYear:"",
+          location:""
         },
-        body: JSON.stringify(userData),
+        connections: {},
+        chats: {}
       });
 
-      const result = await response.json();
-      if (response.ok) {
-        alert('User registered successfully!');
-        setRole('');
-        setName('');
-        setEmail('');
-        setPhone('');
-        setPassword('');
-      } else {
-        alert(result.error || 'Registration failed');
-      }
+      toast.success("Sign up successful!", { position: "top-right" });
+
+      // 🚀 Sign out the user immediately after signup
+      await signOut(auth);
+
+      // Redirect to login page
+      navigate("/login");
+      setName("");
+      setEmail("");
+      setPhone("");
+      setPassword("");
+      setRole("mentor");
+      props.loginStatus();
+
     } catch (error) {
-      alert('An error occurred: ' + error.message);
+      toast.error("Sign up failed! " + error.message, { position: "top-right" });
     }
   };
 
   return (
     <form
-      onSubmit={(e) => {
-        submitHandler(e);
-      }}
-      action='/register'
-      method='post'
-      className='mt-[20px]  md:flex flex-col items-center justify-center grow h-[100%] min-w-[300px] max-w-[60%]'>
-
-      {/* signup page heading */}
-      <div className='w-[100%] '>
+      onSubmit={handleSignup}
+      className='mt-[20px] md:flex flex-col items-center justify-center grow h-[100%] min-w-[300px] max-w-[60%]'>
+      
+      <div className='w-[100%]'>
         <p className='font-bold text-xl'>Get Started</p>
-        <p className='mb-6 text-gray-500'>Welcome to Ment Connect - Let's Create your account</p>
+        <p className='mb-6 text-gray-500'>Welcome to MentorConnect - Let's Create your account</p>
         <hr />
       </div>
 
-      {/* signup data */}
       <div className='w-[100%] mt-6'>
 
-         {/* Mentor Mentee select */}
+        {/* Mentor Mentee select */}
         <div className='flex flex-col w-[100%]'>
           <label htmlFor="role" className='text-s font-normal'> Select Role</label>
-          <select className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' name="role" id="role">
-            onChange={(e) => {
-              setRole(e.target.value);
-            }}
+          <select 
+            className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' 
+            name="role" 
+            id="role"
+            value={role} // Controlled input
+            onChange={(e) => setRole(e.target.value)} // Fixed onChange
+          >
             <option value="mentor">Mentor</option>
             <option value="student">Student</option>
           </select>
         </div>
 
-        {/* name input box */}
+        {/* Name input */}
         <div className='flex flex-col w-[100%] mt-4'>
           <label htmlFor="name" className='text-s font-normal'> Full Name</label>
           <input
             value={name}
-            onChange={(e) => {
-              setName(e.target.value);
-            }}
+            onChange={(e) => setName(e.target.value)}
             required
             type="text"
             id='name'
@@ -90,30 +110,26 @@ export default function SignupForm(props) {
             className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
         </div>
 
-
-        {/* email input box */}
+        {/* Email input */}
         <div className='flex flex-col w-[100%] mt-4'>
           <label htmlFor="signUpEmail" className='text-s font-normal'> Email </label>
           <input
             value={email}
-            onChange={(e) => {
-              setEmail(e.target.value);
-            }}
+            onChange={(e) => setEmail(e.target.value)}
             required
             type="email"
             id='signUpEmail'
             name='email'
-            placeholder='Email' className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
+            placeholder='Email' 
+            className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
         </div>
 
-        {/* phone input box */}
+        {/* Phone input */}
         <div className='flex flex-col w-[100%] mt-4'>
           <label htmlFor="phone" className='text-s font-normal'> Phone Number</label>
           <input
             value={phone}
-            onChange={(e) => {
-              setPhone(e.target.value);
-            }}
+            onChange={(e) => setPhone(e.target.value)}
             required
             type="number"
             id='phone'
@@ -121,15 +137,14 @@ export default function SignupForm(props) {
             placeholder='Phone Number'
             className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
         </div>
-        
 
-        {/* password input box */}
+        {/* Password input */}
         <div className='flex flex-col mt-4'>
-          <label htmlFor="signUpPassword" className='text-s font-normal'> Password </label>
+          <label htmlFor="password" className='text-s font-normal'> Password </label>
           <div className='w-full relative flex items-center'>
             <input
               value={password}
-              onChange={(e) => { setPassword(e.target.value); }}
+              onChange={(e) => setPassword(e.target.value)}
               required
               type={showPassword ? 'text' : 'password'}
               id='password'
@@ -138,24 +153,21 @@ export default function SignupForm(props) {
               className='h-[42px] w-full border-[1px] border-gray-300 p-2 rounded-xl
                       focus:outline-none focus:border-green-900'/>
             <div className='absolute right-3 '>
-              {showPassword ? <BiHide className='text-2xl' onClick={() => { setShowPassword(!showPassword) }} /> : <BiShow className='text-2xl' onClick={() => { setShowPassword(!showPassword) }} />}
+              {showPassword ? 
+                <BiHide className='text-2xl cursor-pointer' onClick={() => setShowPassword(!showPassword)} /> : 
+                <BiShow className='text-2xl cursor-pointer' onClick={() => setShowPassword(!showPassword)} />}
             </div>
           </div>
         </div>
 
-
-
-
-        {/* signup button */}
-        <button type='submit' className='mt-8 bg-green-950 text-white p-2 w-[100%] rounded-xl font-normal' onClick={submitHandler}>Sign Up</button>
+        {/* Signup button */}
+        <button type='submit' className='mt-8 bg-green-950 text-white p-2 w-[100%] rounded-xl font-normal'>Sign Up</button>
+        
         <p className='text-center mt-3'>Already have an account?
-          <span
-            onClick={() => {
-              props.loginStatus();
-            }}
-            className='text-green-900 cursor-pointer' > Log In</span>
+          <span onClick={() => props.loginStatus()} className='text-green-900 cursor-pointer'> Log In</span>
         </p>
       </div>
+
     </form>
-  )
+  );
 }

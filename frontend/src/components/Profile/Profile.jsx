@@ -1,43 +1,40 @@
-import React from 'react'
-import { useState } from 'react';
+import React, { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
-
-
+import { auth, db } from "../../firebase";
+import { doc, getDoc, updateDoc } from "firebase/firestore";
+import { onAuthStateChanged } from "firebase/auth";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Profile() {
-  const det = 1;
-  const user = {
-    id: 1,
-    name: "Md Alkama",
-    email: "mdalkamadad@gmail.com",
-    phone: "1234567890",
-    age: 22,
-    role: "Mentor",
-    profile: "https://i.pinimg.com/564x/3c/1c/73/3c1c7364ed3445e25235b032ebc1dfe5.jpg",
-    location: "Patna, Bihar",
-    gender: "Male",
-    skills: {
-      0: "React",
-      1: "Node.js",
-      2: "JavaScript",
-      3: "Python",
-      4: "Django",
-      5: "HTML",
-      6: "CSS",
-      7: "MongoDB"
-    },
-    education: {
-      0: {
-        name: "Maulana Azad College Of Engineering And Technlogy",
-        degree: "B.Tech",
-        field: "Computer Science Engineering",
-        startYear: "2020",
-        endYear: "2024",
-        location: "Patna, Bihar"
+
+
+
+
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true); // Track loading state
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+      if (currentUser) {
+        try {
+          const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+          if (userDoc.exists()) {
+            setUser(userDoc.data());
+          }
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      } else {
+        setUser(null);
       }
-    }
-  }
-  const skill = Object.values(user.skills);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+
   const [isOpenEditProfile, setIsOpenEditProfile] = useState(false);
   const [isOpenSkillsAdd, setIsOpenSkillsAdd] = useState(false);
   const [scroll, setScroll] = useState(true);
@@ -54,9 +51,23 @@ export default function Profile() {
   }
   { scroll ? document.body.style.overflow = "auto" : document.body.style.overflow = "hidden" }
 
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (!user) {
+    return <p className="mt-[100px]">No user data found.</p>;
+  }
+
   return (
-    <div className='mt-[68px] p-4 flex flex-col items-center justify-start'>
-      {/* profile main */}
+    <>
+    {
+      user
+      ?
+      <div className='mt-[68px] p-4 flex flex-col items-center justify-start'>
+
+
       <div id="profile-main" className='px-4 flex flex-col md:flex-row md:h-[200px] w-full md:w-[90%] justify-between items-center'>
         <div id='profile-and-info' className='flex md:h-full flex-col  md:flex-row justify-center items-center gap-4'>
           <div style={{ backgroundImage: `url(${user.profile})` }} id="profie-photo" className='h-[150px] w-[150px] rounded-full bg-cover bg-center'>
@@ -68,54 +79,25 @@ export default function Profile() {
         </div>
 
         <div className='w-full md:w-[150px] flex justify-center items-center'>
-          {
-            det === 1
-              ?
               <button onClick={() => { openEditProfileToggle(); setScroll(!scroll); }} className=' h-[50px] w-[90%] md:w-[150px] rounded-md mt-4 font-semibold text-lg  md:mt-0 bg-[#0B65C2] text-white'>Edit Profile</button>
-              :
-              det === 2
-                ?
-                <button className=' h-[50px] w-[90%] md:w-[150px] rounded-md mt-4  md:mt-0 bg-[#0B65C2] text-white'>Connect</button>
-                :
-                <button className=' h-[50px] w-[90%] md:w-[150px] rounded-md mt-4  md:mt-0 bg-[#04AA6D] text-white'>Send Message</button>
-          }
         </div>
 
       </div>
-
-      {/* basic info section */}
       <BasicInfo user={user} />
-
-
-      {/* education section */}
+      {isOpenEditProfile ? <EditProfile  user = {user} scrollToggle={scrollToggle} openEditProfileToggle={openEditProfileToggle} /> : null }
       <Education education={user.education} education1={user.education} />
+      <Skills skills={user.skills} openSkillsAddToggle={openSkillsAddToggle} scrollToggle={scrollToggle} />
+      { isOpenSkillsAdd ? <SkillsAdd skills={user.skills} openSkillsAddToggle={openSkillsAddToggle} scrollToggle={scrollToggle} /> : null }
 
 
-      {/* edit profile popup */}
-      {
-        isOpenEditProfile
-          ?
-          <EditProfile scrollToggle={scrollToggle} openEditProfileToggle={openEditProfileToggle} />
-          :
-          null
-      }
-
-
-      {/* Skills section */}
-      <Skills skills={skill} openSkillsAddToggle={openSkillsAddToggle} scrollToggle={scrollToggle} />
-
-
-      {/* skills add popup */}
-      {
-        isOpenSkillsAdd
-          ?
-          <SkillsAdd skills={skill} openSkillsAddToggle={openSkillsAddToggle} scrollToggle={scrollToggle} />
-          :
-          null
-      }
     </div>
-  )
+      :
+      <p className='mt-[68px] p-4 text-3xl flex flex-col items-center justify-center h-screen w-screen'> Loading...</p>
+    }
+    </>
+  );
 }
+
 
 function BasicInfo(props) {
   return (
@@ -123,52 +105,62 @@ function BasicInfo(props) {
       <h3 className='font-semibold py-2 md:py-2 md:font-bold text-2xl w-full text-center border-b-[1px] border-black'>User Info</h3>
       <div className='pl-4 md:pl-4 w-full gap-2 py-4 rounded-lg  bg-[white] flex flex-col justify-start items-start'>
         <p className='font-bold text-sm md:text-xl'>Role: {props.user.role}</p>
-        <p className='font-semibold text-sm md:text-lg'>Location: {props.user.location}</p>
-        <p className='font-semibold text-sm md:text-lg'>gender: {props.user.gender}</p>
+        {props.user.location !== "" ? <p className='font-semibold text-sm md:text-lg'>Location: {props.user.location}</p> : null}
+        {props.user.gender !== "" ? <p className='font-semibold text-sm md:text-lg'>gender: {props.user.gender}</p> : null}
+        
       </div>
 
     </div>
   )
 }
 
+
 function EditProfile(props) {
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [age, setAge] = useState('');
-  const [gender, setGender] = useState('');
-  const [location, setLocation] = useState('');
+  const [name, setName] = useState(props.user.name);
+  const [email, setEmail] = useState(props.user.email);
+  const [profile, setProfile] = useState(props.user.profile);
+  const [age, setAge] = useState(props.user.age);
+  const [gender, setGender] = useState(props.user.gender);
+  const [location, setLocation] = useState(props.user.location);
 
-  const submitHandler = async (e) => {
-    e.preventDefault();
 
-    const userData = { name, email, phone, age, gender, location };
+    const updateUserProfile = async (uid, updatedData) => {
+    if (!uid) {
+      toast.error("User ID is missing!");
+      return;
+    }
 
     try {
-      const response = await fetch('http://127.0.0.1:5000/editprofile', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(userData),
-      });
-
-      const result = await response.json();
-      if (response.ok) {
-        alert('Profile saved successfully!');
-        setName('');
-        setEmail('');
-        setPhone('');
-        setAge('');
-        setGender('');
-        setLocation('');
-      } else {
-        alert(result.error || 'Saving failed');
-      }
+      const userRef = doc(db, "users", uid);
+      await updateDoc(userRef, updatedData);
+      toast.success("Profile updated successfully!");
     } catch (error) {
-      alert('An error occurred: ' + error.message);
+      toast.error("Error updating profile");
+      console.error("Update failed:", error);
     }
   };
+
+  // 🔹 Handle Form Submit
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!props.user || !props.user.userid) {
+      toast.error("User not found!");
+      return;
+    }
+
+    const newData = {
+      name,
+      profile,
+      age,
+      email,
+      gender,
+      location,
+    };
+
+    updateUserProfile(props.user.userid, newData);
+  };
+
 
   return (
     <div className='w-full h-[100vh] fixed top-0 left-0 bg-[#0000005a] flex justify-center items-center z-[100]'>
@@ -181,11 +173,7 @@ function EditProfile(props) {
         <p className='w-full h-[50px] pl-4 text-2xl font-bold mt-[15px] border-b-[1px] border-[#5d5d5d]'>Edit Profile</p>
 
         <form
-          onSubmit={(e) => {
-            submitHandler(e);
-          }}
-          action='/editprofile'
-          method='post'
+          onSubmit={handleSubmit}
           className='my-8 md:flex flex-col items-center justify-start grow h-[100%] w-[90%]'
         >
           {/* name input box */}
@@ -220,19 +208,19 @@ function EditProfile(props) {
               placeholder='Email' className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
           </div>
 
-          {/* phone input box */}
+          {/* profile input box */}
           <div className='flex flex-col w-[100%] mt-4'>
-            <label htmlFor="phone" className='text-s font-normal'> Phone Number</label>
+            <label htmlFor="profile" className='text-s font-normal'>Profile</label>
             <input
-              value={phone}
+              value={profile}
               onChange={(e) => {
-                setPhone(e.target.value);
+                setProfile(e.target.value);
               }}
               required
-              type="number"
-              id='phone'
-              name='phone'
-              placeholder='Phone Number'
+              type="text"
+              id='profile'
+              name='profile'
+              placeholder='Upload URL'
               className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
           </div>
 
@@ -255,32 +243,34 @@ function EditProfile(props) {
           {/* gender input box */}
           <div className='flex flex-col w-[100%] mt-4'>
             <label htmlFor="gender" className='text-s font-normal'>Gender</label>
-            <select name="gender" id="gender" className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900'>
-              <option value="select Gender">Select Gender</option>
+            <select name="gender" id="gender"
+            value={gender} // Controlled input
+            onChange={(e) => setGender(e.target.value)}
+            className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900'>
               <option value="male">Male</option>
               <option value="female">Female</option>
               <option value="other">Other</option>
             </select>
           </div>
 
-          {/* name input box */}
+          {/* location input box */}
           <div className='flex flex-col w-[100%] mt-4'>
-            <label htmlFor="name" className='text-s font-normal'> Full Name</label>
+            <label htmlFor="name" className='text-s font-normal'>Location</label>
             <input
-              value={name}
+              value={location}
               onChange={(e) => {
-                setName(e.target.value);
+                setLocation(e.target.value);
               }}
               required
               type="text"
-              id='name'
-              name='name'
-              placeholder='Full Name'
+              id='location'
+              name='location'
+              placeholder='Location'
               className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
           </div>
 
           {/* save button */}
-          <button type='submit' className='mt-8 bg-green-950 text-white p-2 w-[100%] rounded-xl font-normal' onClick={submitHandler}>Save Changes</button>
+          <button type='submit' className='mt-8 bg-green-950 text-white p-2 w-[100%] rounded-xl font-normal'>Save Changes</button>
         </form>
 
 
@@ -300,15 +290,15 @@ function Education(props) {
       <h3 className='font-semibold py-2 md:py-2 md:font-bold text-2xl w-full text-center border-b-[1px] border-black'>Education</h3>
 
       {
-        education
+        education.name !== ""
           ?
           <div className='pl-2 md:pl-4 w-full gap-4 py-8 rounded-lg  bg-[white] flex justify-start items-center'>
             <div className='h-[50px] w-[50px] sm:h-[80px] shrink-0 sm:w-[80px] md:h-[150px] md:w-[150px] bg-[url(https://cdn-icons-png.freepik.com/256/4981/4981453.png?semt=ais_hybrid)] bg-cover bg-center '></div>
             <div>
-              <p className='font-bold text-sm md:text-xl'>{education[0].name}</p>
-              <p className='font-semibold text-xs md:text-lg'> {education[0].degree} - {education[0].field}</p>
-              <p className='font-semibold text-sm md:text-lg'>{education[0].startYear} - {education[0].endYear}</p>
-              <p className='font-semibold text-sm md:text-lg text-[#616161]'>{education[0].location}</p>
+              <p className='font-bold text-sm md:text-xl'>{education.name}</p>
+              <p className='font-semibold text-xs md:text-lg'> {education.degree} - {education.field}</p>
+              <p className='font-semibold text-sm md:text-lg'>{education.startYear} - {education.endYear}</p>
+              <p className='font-semibold text-sm md:text-lg text-[#616161]'>{education.location}</p>
             </div>
           </div>
           :
@@ -319,6 +309,7 @@ function Education(props) {
   )
 }
 
+
 function Skills(props) {
   return (
     <div className='mt-10 px-2 md:px-4 w-[100%] md:w-[90%] gap-1 md:gap-4 rounded-md md:rounded-lg bg-[white] border-[1px] border-[#5d5d5d] flex flex-col justify-start items-center'>
@@ -328,10 +319,10 @@ function Skills(props) {
           ?
           <div className='pl-0 md:pl-4 w-full gap-4 py-8 rounded-lg  bg-[white] flex justify-start items-center flex-wrap'>
             {
-              props.skills.map((skills) => {
+              props.skills.map((skills,index) => {
 
                 return (
-                  <p className='h-[40px] bg-[#0B65C2] p-2 text-white rounded-lg'>{skills}</p>
+                  <p key={index} className='h-[40px] bg-[#0B65C2] p-2 text-white rounded-lg'>{skills}</p>
                 )
               })
             }
@@ -363,10 +354,10 @@ function SkillsAdd(props) {
 
         <div className='px-2 md:px-4 w-full gap-4 py-6 rounded-lg bg-[white] flex justify-start items-center flex-wrap'>
           {
-            props.skills.map((skills) => {
+            props.skills.map((skills,index) => {
               return (
-                <div>
-                  <p className='h-[40px] bg-[#0B65C2] p-2 text-white rounded-lg'>{skills}</p>
+                <div key={index}>
+                  <p  className='h-[40px] bg-[#0B65C2] p-2 text-white rounded-lg'>{skills}</p>
                 </div>
               )
 
@@ -378,3 +369,5 @@ function SkillsAdd(props) {
     </div>
   )
 }
+
+

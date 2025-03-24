@@ -6,8 +6,8 @@ import { ToastContainer, toast } from 'react-toastify';
 function Message() {
   const [selectedChat, setSelectedChat] = useState(null);
   const [message, setMessage] = useState("");
-  const [messages, setMessages] = useState({});
-  
+  const [messages, setMessages] = useState({}); // Stores messages for each chat
+
   const chatsData = {
     0: { id: 0, name: 'Md Alkama', lastSeen: '1 min ago', image: 'https://images.unsplash.com/photo-1640960543409-dbe56ccc30e2?q=80&w=2725&auto=format&fit=crop' },
     1: { id: 1, name: 'Mohammad Zaid Khan', lastSeen: '2 min ago', image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=2960&auto=format&fit=crop' },
@@ -22,51 +22,21 @@ function Message() {
 
   const chats = Object.values(chatsData);
 
-  // Fetch chat history when a chat is selected
-  const fetchMessages = async (chatId) => {
-    try {
-      const response = await fetch(`http://127.0.0.1:5000/chat/${chatId}`, {
-        method: "GET",
-        credentials: "include", // Ensures cookies (session) are included
-        headers: { "Content-Type": "application/json" }
-      });
-
-      if (!response.ok) throw new Error("Failed to fetch messages");
-      const data = await response.json();
-      setMessages((prev) => ({ ...prev, [chatId]: data }));
-    } catch (error) {
-      console.error("Error fetching messages:", error);
-    }
-  };
-
-  // Function to send message via API
-  const handleSendMessage = async () => {
+  // Function to send message
+  const handleSendMessage = () => {
     if (message.trim() === "" || !selectedChat) return;
 
-    try {
-      const response = await fetch("http://127.0.0.1:5000/send_message", {
-        method: "POST",
-        credentials: "include", // Ensures session authentication
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ receiver_id: selectedChat.id, text: message }),
-      });
+    setMessages(prevMessages => ({
+      ...prevMessages,
+      [selectedChat.id]: [...(prevMessages[selectedChat.id] || []), { text: message, sender: "You" }]
+    }));
 
-      if (!response.ok) throw new Error("Failed to send message");
-      
-      setMessages((prev) => ({
-        ...prev,
-        [selectedChat.id]: [...(prev[selectedChat.id] || []), { text: message, sender_id: "You" }]
-      }));
-
-      setMessage("");
-    } catch (error) {
-      console.error("Failed to send message:", error);
-    }
+    setMessage("");
   };
 
   return (
-    <div id='message' className='pt-[68px] h-[100vh] flex items-start justify-center'>
-      <Chats chats={chats} onSelectChat={(chat) => { setSelectedChat(chat); fetchMessages(chat.id); }} />
+    <div id='message' className='pt-[68px] bg-[#F7F5F0] h-[100vh] flex items-start justify-center'>
+      <Chats chats={chats} onSelectChat={setSelectedChat} />
 
       {/* Chat Window */}
       {selectedChat 
@@ -83,7 +53,7 @@ function Message() {
           {/* Messages Display */}
           <div className='h-[calc(100vh_-_188px)] w-[100%] overflow-y-auto p-4 flex flex-col gap-2'>
             {messages[selectedChat.id]?.map((msg, index) => (
-              <div key={index} className={`p-2 rounded-md max-w-[80%] ${msg.sender_id === "You" ? "bg-blue-500 text-white self-end" : "bg-gray-200 self-start"}`}>
+              <div key={index} className={`p-2 rounded-md max-w-[80%] ${msg.sender === "You" ? "bg-blue-500 text-white self-end" : "bg-gray-200 self-start"}`}>
                 {msg.text}
               </div>
             ))}
