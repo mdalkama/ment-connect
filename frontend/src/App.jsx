@@ -13,26 +13,35 @@ import Profile from "./components/Profile/Profile";
 import Footer from "./components/Footer/Footer";
 
 function App() {
-  const [data, setData] = useState("");
+  const [user, setUser] = useState(null);
 
+  // Check if user is logged in (session check)
   useEffect(() => {
-    axios.get("http://127.0.0.1:5000/api/data")
-      .then((response) => setData(response.data.message))
-      .catch((error) => console.error("Error:", error));
+    axios
+      .get("http://127.0.0.1:5000/protected_route", { withCredentials: true })
+      .then((res) => {
+        console.log("User Data:", res.data);
+        if (res.data.user) {
+          setUser(res.data.user);
+        }
+      })
+      .catch((err) => {
+        console.error("Not logged in:", err);
+      });
   }, []);
 
   return (
     <div className="bg-[#ffffff] text-[#131417]">
       <Router>
-        <Navbar />
+        <Navbar user={user} />
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/mentors" element={<Mentors />} />
           <Route path="/mentees" element={<Mentees />} />
           <Route path="/message" element={<Message />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/login" element={<LoginPage />} />
-          <Route path="/profile" element={<Profile />} />
+          <Route path="/login" element={<LoginPage setUser={setUser} />} />
+          <Route path="/profile" element={<Profile user={user} />} />
         </Routes>
         <Footer />
       </Router>
