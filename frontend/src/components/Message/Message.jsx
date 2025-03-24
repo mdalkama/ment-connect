@@ -28,14 +28,15 @@ function Message() {
   };
 
   return (
-    <div id='message' className='pt-[68px] h-[100vh] flex items-start justify-center'>
+    <div id='message' className='pt-[68px] bg-[#F7F5F0] h-[100vh] flex items-start justify-center'>
       <Chats chats={chats} onSelectChat={setSelectedChat} />
 
       {/* Chat Window */}
-      {selectedChat && (
-        <div id="chat" className='w-[100%] md:w-[calc(100%_-_400px)] min-h-[calc(100vh_-_68px)] flex flex-col h-[100%] border-[1px] border-gray-300 bg-white'>
+      {selectedChat 
+      ?
+        <div id="chat" className='fixed w-[100%] sm:static md:w-[calc(100%_-_400px)] min-h-[calc(100vh_-_68px)] flex flex-col h-[100%] border-[1px] border-gray-300 bg-[#F7F5F0]'>
           <div className='border-b-[1px] border-[#646464] text-[black] h-[60px] w-[100%] flex justify-start items-center px-4'>
-            <IoIosArrowRoundBack className=' md:hidden w-[46px] h-[46px] cursor-pointer mr-4' onClick={() => setSelectedChat(null)} />
+            <IoIosArrowRoundBack className=' sm:hidden w-[46px] h-[46px] cursor-pointer mr-4' onClick={() => setSelectedChat(null)} />
             <div>
               <p className='text-[16px] font-bold'>{selectedChat.name}</p>
               <p className='text-[12px] font-normal'>Last seen {selectedChat.lastSeen}</p>
@@ -67,7 +68,20 @@ function Message() {
             </button>
           </div>
         </div>
-      )}
+        :
+        <div className=' hidden fixed w-[100%] sm:static md:w-[calc(100%_-_400px)] min-h-[calc(100vh_-_68px)] sm:flex flex-col h-[100%] border-[1px] border-gray-300 bg-[#F7F5F0]'>
+          <div className='border-b-[1px] border-[#646464] text-[black] h-[60px] w-[100%] flex justify-start items-center px-4'>
+            <div>
+              <p className='text-[16px] font-bold'>Chat</p>
+            </div>
+          </div>
+
+          {/* Messages Display */}
+          <div className='h-[calc(100vh_-_188px)] w-[100%] overflow-y-auto p-4 flex justify-center items-center flex-col gap-2'>
+            Open a chat to start messaging.
+          </div>
+        </div>
+      }
     </div>
   );
 }
@@ -75,7 +89,7 @@ function Message() {
 // Chats Component
 function Chats({ chats, onSelectChat }) {
   return (
-    <div id="chats" className='w-[100%] md:w-[400px] min-h-[calc(100vh_-_68px)] flex flex-col h-[100%] border-[1px] border-gray-300 bg-white overflow-y-auto'>
+    <div id="chats" className='w-[100%] md:w-[400px] min-h-[calc(100vh_-_68px)] flex flex-col h-[100%] border-[1px] border-gray-300 bg-[#F7F5F0] overflow-y-auto'>
       <div className='border-b-[0.5px] border-black text-black shrink-0 h-[60px] w-[100%] flex justify-start items-center pl-4 font-bold'>
         Messaging
       </div>

@@ -75,7 +75,7 @@ const handleLogout = async () => {
 
           {/* Mobile Menu */}
           {isOpen && (
-            <ul className='md:hidden absolute top-16 text-center left-0 w-full bg-[#ffffff] shadow-md py-2 px-4 z-50 border-black-400'>
+            <ul className='md:hidden absolute top-16 text-center left-0 w-full bg-[#F8F5F1] shadow-md py-2 px-4 z-50 border-black-400'>
               <li className='py-2 font-[400] text-ll pt-5'><Link to="/" onClick={toggleMenu} className={isActiveLink('/')}>Home</Link></li>
               {role === "mentor" ?
               <li className='py-2 font-[400] text-l pt-5'><Link to="/mentees" onClick={toggleMenu} className={isActiveLink('/mentees')}>Mentees</Link></li> 
