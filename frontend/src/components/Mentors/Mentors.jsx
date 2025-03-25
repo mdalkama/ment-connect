@@ -1,7 +1,52 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { IoMdClose } from 'react-icons/io';
+import { collection, query, where, getDocs } from "firebase/firestore";
+import { db, auth } from "../../firebase";
 
 export default function Mentors() {
+
+  const [userData, setUserData] = useState(null);
+  const [mentors, setMentors] = useState([]);
+
+useEffect(() => {
+}, [mentors]);
+
+  useEffect(() => {
+    const fetchUserData = async () => {
+      const user = auth.currentUser; // Get logged-in user
+      if (!user) return;
+
+      const userRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(userRef);
+
+      if (docSnap.exists()) {
+        setUserData(docSnap.data());
+      }
+    };
+
+    fetchUserData();
+  }, []);
+
+  useEffect(() => {
+const fetchMentors = async () => {
+  try {
+    const q = query(collection(db, "users"), where("role", "==", "mentor")); // 🔹 Query mentors
+    const querySnapshot = await getDocs(q);
+
+    const mentorList = querySnapshot.docs.map((doc) => ({
+      id: doc.id,
+      ...doc.data(),
+    }));
+    setMentors(mentorList);
+  } catch (error) {
+    console.error("Error fetching mentors:", error);
+  }
+};
+
+    fetchMentors();
+  }, []);
+
+
     const [openProfile, setOpenProfile] = useState(false);
     const [scroll, setScroll] = useState(true);
     const [showProfile, setShowProfile] = useState({});
@@ -241,8 +286,6 @@ export default function Mentors() {
     ];
 
 
-    // const skill = 0
-
     const scrollToggle = () => {
         setScroll(!scroll);
     };
@@ -263,7 +306,7 @@ export default function Mentors() {
     return (
         <>
             <div id='about' className='min-h-[100vh] pt-[68px] w-[100%] flex justify-evenly flex-wrap bg-[#f5f8f1]'>
-                {users.map((user, index) => {
+                {mentors.map((user, index) => {
                     return (
                         <Mentor key={index} user={user} openProfileToggle={openProfileToggle} scrollToggle={scrollToggle} showProfileUpdate={showProfileUpdate} />
                     )
