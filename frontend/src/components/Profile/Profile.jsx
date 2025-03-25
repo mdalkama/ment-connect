@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { IoMdClose } from "react-icons/io";
 import { MdModeEdit } from "react-icons/md";
 import { auth, db } from "../../firebase";
-import { doc, getDoc, updateDoc, collection } from "firebase/firestore";
+import { doc, getDoc, updateDoc, collection, arrayUnion } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
 
 import { toast } from "react-toastify";
@@ -102,7 +102,7 @@ export default function Profile() {
       <Education education={user.education} openEditEducationToggle = {openEducationToggle} scrollToggle = {scrollToggle}/>
       {isOpenEducationAdd ? <EditEducation  user={user} openEditEducationToggle = {openEducationToggle} scrollToggle = {scrollToggle} /> : null }
       <Skills skills={user.skills} openSkillsAddToggle={openSkillsAddToggle} scrollToggle={scrollToggle} />
-      { isOpenSkillsAdd ? <SkillsAdd skills={user.skills} openSkillsAddToggle={openSkillsAddToggle} scrollToggle={scrollToggle} /> : null }
+      { isOpenSkillsAdd ? <SkillsAdd user={user} skills={user.skills} openSkillsAddToggle={openSkillsAddToggle} scrollToggle={scrollToggle} /> : null }
 
 
     </div>
@@ -550,6 +550,29 @@ function Skills(props) {
 }
 
 function SkillsAdd(props) {
+  const [skill, setSkill] = useState("");
+
+  const handleSubmit = async (e) => {
+    e.preventDefault(); // Prevent page reload
+
+    if (!skill.trim()) {
+      alert("Please enter a skill!"); // Check if input is empty
+      return;
+    }
+    console.log(props.user.userid)
+    const userRef = doc(db, "users", props.user.userid); // Reference to user's document
+
+    try {
+      await updateDoc(userRef, {
+        skills: arrayUnion(skill), // Add skill to Firestore array
+      });
+      console.log(`Skill "${skill}" added successfully!`);
+      setSkill(""); // Clear input field after submission
+    } catch (error) {
+      console.error("Error adding skill:", error);
+    }
+  };
+
   return (
     <div className='w-full h-[100vh] fixed top-0 left-0 bg-[#0000005a] flex justify-center items-center z-[100]'>
       <div className='w-[95%] rounded-lg md:w-[50%] z-[120] bg-white absolute md:top-[50%] md:left-[50%] md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-xl border-[1px] border-[#5d5d5d] flex flex-col justify-start items-center shadow-lg'>
@@ -573,9 +596,29 @@ function SkillsAdd(props) {
           }
         </div>
 
+          <form
+          onSubmit={handleSubmit}
+          className='my-8 md:flex flex-col items-center justify-start grow h-[100%] w-[90%]'
+        >
+          <div className='flex flex-col w-[100%] '>
+            <input
+              value={skill}
+              onChange={(e) => {
+                setSkill(e.target.value);
+              }}
+              required
+              type="text"
+              id='skill'
+              name='skill'
+              placeholder='Add Skill'
+              className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
+          </div>
+
+          {/* save button */}
+          <button onSubmit={handleSubmit} type='submit' className='mt-8 bg-green-950 text-white p-2 w-[100%] rounded-xl font-normal'>Save Changes</button>
+        </form>
+
       </div>
     </div>
   )
 }
-
-

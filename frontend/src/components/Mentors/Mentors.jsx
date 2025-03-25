@@ -8,6 +8,8 @@ export default function Mentors() {
     const [userData, setUserData] = useState(null);
     const [mentors, setMentors] = useState([]);
 
+
+
     useEffect(() => {
     }, [mentors]);
 
@@ -70,9 +72,10 @@ export default function Mentors() {
 
 
 
+    console.log(mentors)
 
     return (
-<>
+        <>
             <div id='about' className='min-h-[100vh] pt-[68px] px-4 w-[100%] grid md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 sm:grid-cols-2  grid-cols-1  bg-[#f5f8f1]'>
                 {mentors.map((user, index) => {
                     return (
@@ -84,7 +87,7 @@ export default function Mentors() {
             </div>
             {openProfile
                 ?
-                <Profile showProfile={showProfile} openProfileToggle={openProfileToggle} scrollToggle={scrollToggle} user={user} det={det} />
+                <Profile showProfile={showProfile} openProfileToggle={openProfileToggle} scrollToggle={scrollToggle} />
                 :
                 null
             }
@@ -97,7 +100,7 @@ export default function Mentors() {
 function Mentor(props) {
     return (
         <div className='py-4 px-2 h-fit flex justify-center'>
-            <div className="bg-white  rounded-2xl shadow-md md:min-w-[230px]  lg:min-w-[280px] w-[320px] p-6 hover:scale-105 transition-transform flex flex-col items-center ">
+            <div className="bg-white  rounded-2xl shadow-md md:min-w-[230px] lg:min-w-[280px] w-[320px] p-6 hover:scale-105 transition-transform flex flex-col items-center ">
                 <div className="w-28 h-28 rounded-full overflow-hidden mb-4">
                     <img
                         src="https://img.freepik.com/free-photo/business-finance-employment-female-successful-entrepreneurs-concept-confident-smiling-asian-businesswoman-office-worker-white-suit-glasses-using-laptop-help-clients_1258-59126.jpg"
@@ -110,11 +113,11 @@ function Mentor(props) {
                 <h3 className='text-center mb-4 font-medium text-sm'>{props.user.role}</h3>
                 <div className='flex sm:gap-4 md:gap-2 lg:gap-6 gap-8'>
                     {props.user.connection
-                    ?
-                    <button className='bg-[#0468BF] text-white md:px-2 md:py-1 px-3 py-2 rounded text-sm '>Connect</button>
-                    :
-                    <button className='bg-[#04AA6D] text-white md:px-2 md:py-1  px-3 py-2 rounded text-sm '>Message</button>}
-                    
+                        ?
+                        <button className='bg-[#0468BF] text-white md:px-2 md:py-1 px-3 py-2 rounded text-sm '>Connect</button>
+                        :
+                        <button className='bg-[#04AA6D] text-white md:px-2 md:py-1  px-3 py-2 rounded text-sm '>Message</button>}
+
                     <button onClick={() => {
                         props.openProfileToggle()
                         props.scrollToggle()
@@ -128,7 +131,7 @@ function Mentor(props) {
 
 
 function Profile(props) {
-    const education = props.showProfile.education[0];
+    const education = props.showProfile.education;
     const user = props.showProfile;
     const skills = Object.values(user.skills);
     return (

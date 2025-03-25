@@ -24,14 +24,7 @@ function Message() {
 
   // Function to send message
   const handleSendMessage = () => {
-    if (message.trim() === "" || !selectedChat) return;
-
-    setMessages(prevMessages => ({
-      ...prevMessages,
-      [selectedChat.id]: [...(prevMessages[selectedChat.id] || []), { text: message, sender: "You" }]
-    }));
-
-    setMessage("");
+    console.log("Sending message: ")
   };
 
   return (
@@ -52,11 +45,9 @@ function Message() {
 
           {/* Messages Display */}
           <div className='h-[calc(100vh_-_188px)] w-[100%] overflow-y-auto p-4 flex flex-col gap-2'>
-            {messages[selectedChat.id]?.map((msg, index) => (
-              <div key={index} className={`p-2 rounded-md max-w-[80%] ${msg.sender === "You" ? "bg-blue-500 text-white self-end" : "bg-gray-200 self-start"}`}>
-                {msg.text}
-              </div>
-            ))}
+
+{/* message will be go here */}
+
           </div>
 
           {/* Message Input */}

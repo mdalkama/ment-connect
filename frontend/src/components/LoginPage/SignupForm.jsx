@@ -36,7 +36,6 @@ export default function SignupForm(props) {
         location: "",
         gender: "",
         age:"",
-        skills: [],
         education: {
           name: "",
           degree: "",
@@ -45,9 +44,13 @@ export default function SignupForm(props) {
           endYear:"",
           location:""
         },
-        connections: {},
-        chats: {}
+        skills: [],
+        dayTask: [],
+        monthTask: [],
+        connections: [],
+        chats: []
       });
+      await setDoc(doc(db, "userChats", user.uid),{})
 
       toast.success("Sign up successful!", { position: "top-right" });
 
