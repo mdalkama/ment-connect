@@ -77,8 +77,15 @@ export default function Profile() {
 
       <div id="profile-main" className='px-4 flex flex-col md:flex-row md:h-[200px] w-full md:w-[90%] justify-between items-center'>
         <div id='profile-and-info' className='flex md:h-full flex-col  md:flex-row justify-center items-center gap-4'>
+          {user.profile 
+          ?
           <div style={{ backgroundImage: `url(${user.profile})` }} id="profie-photo" className='h-[150px] w-[150px] rounded-full bg-cover bg-center'>
           </div>
+          :
+          <div id="profie-photo" className='h-[150px] w-[150px] rounded-full bg-[url(https://www.mauicardiovascularsymposium.com/wp-content/uploads/2019/08/dummy-profile-pic-300x300.png)] bg-cover bg-center'>
+          </div>
+}
+          
           <div id='name-and-email' className='flex flex-col items-center md:items-start'>
             <p className='font-bold text-2xl'>{user.name}</p>
             <p className='font-semibold text-lg'>{user.email}</p>
