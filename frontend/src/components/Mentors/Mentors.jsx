@@ -5,46 +5,46 @@ import { db, auth } from "../../firebase";
 
 export default function Mentors() {
 
-  const [userData, setUserData] = useState(null);
-  const [mentors, setMentors] = useState([]);
+    const [userData, setUserData] = useState(null);
+    const [mentors, setMentors] = useState([]);
 
-useEffect(() => {
-}, [mentors]);
+    useEffect(() => {
+    }, [mentors]);
 
-  useEffect(() => {
-    const fetchUserData = async () => {
-      const user = auth.currentUser; // Get logged-in user
-      if (!user) return;
+    useEffect(() => {
+        const fetchUserData = async () => {
+            const user = auth.currentUser; // Get logged-in user
+            if (!user) return;
 
-      const userRef = doc(db, "users", user.uid);
-      const docSnap = await getDoc(userRef);
+            const userRef = doc(db, "users", user.uid);
+            const docSnap = await getDoc(userRef);
 
-      if (docSnap.exists()) {
-        setUserData(docSnap.data());
-      }
-    };
+            if (docSnap.exists()) {
+                setUserData(docSnap.data());
+            }
+        };
 
-    fetchUserData();
-  }, []);
+        fetchUserData();
+    }, []);
 
-  useEffect(() => {
-const fetchMentors = async () => {
-  try {
-    const q = query(collection(db, "users"), where("role", "==", "mentor")); // 🔹 Query mentors
-    const querySnapshot = await getDocs(q);
+    useEffect(() => {
+        const fetchMentors = async () => {
+            try {
+                const q = query(collection(db, "users"), where("role", "==", "mentor")); // 🔹 Query mentors
+                const querySnapshot = await getDocs(q);
 
-    const mentorList = querySnapshot.docs.map((doc) => ({
-      id: doc.id,
-      ...doc.data(),
-    }));
-    setMentors(mentorList);
-  } catch (error) {
-    console.error("Error fetching mentors:", error);
-  }
-};
+                const mentorList = querySnapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                }));
+                setMentors(mentorList);
+            } catch (error) {
+                console.error("Error fetching mentors:", error);
+            }
+        };
 
-    fetchMentors();
-  }, []);
+        fetchMentors();
+    }, []);
 
 
     const [openProfile, setOpenProfile] = useState(false);
