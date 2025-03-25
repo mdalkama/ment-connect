@@ -51,239 +51,7 @@ export default function Mentors() {
     const [scroll, setScroll] = useState(true);
     const [showProfile, setShowProfile] = useState({});
     const det = 1;
-    const user = {
-        id: 1,
-        name: "Md Alkama",
-        email: "mdalkamadad@gmail.com",
-        phone: "1234567890",
-        age: 22,
-        role: "Mentor",
-        profile: "https://i.pinimg.com/564x/3c/1c/73/3c1c7364ed3445e25235b032ebc1dfe5.jpg",
-        location: "Patna, Bihar",
-        gender: "Male",
-        skills: {
-            0: "React",
-            1: "Node.js",
-            2: "JavaScript",
-            3: "Python",
-            4: "Django",
-            5: "HTML",
-            6: "CSS",
-            7: "MongoDB"
-        },
-        education: {
-            0: {
-                name: "Maulana Azad College Of Engineering And Technlogy",
-                degree: "B.Tech",
-                field: "Computer Science Engineering",
-                startYear: "2020",
-                endYear: "2024",
-                location: "Patna, Bihar"
-            }
-        }
-    }
-    const users = [
-        {
-            id: 1,
-            name: "Md Alkama",
-            email: "mdalkamadad@gmail.com",
-            phone: "1234567890",
-            age: 22,
-            role: "Mentor",
-            profile: "https://i.pinimg.com/564x/3c/1c/73/3c1c7364ed3445e25235b032ebc1dfe5.jpg",
-            location: "Patna, Bihar",
-            gender: "Male",
-            skills: ["React", "Node.js", "JavaScript", "Python", "Django", "HTML", "CSS", "MongoDB"],
-            education: [{
-                name: "Maulana Azad College Of Engineering And Technology",
-                degree: "B.Tech",
-                field: "Computer Science Engineering",
-                startYear: "2020",
-                endYear: "2024",
-                location: "Patna, Bihar"
-            }]
-        },
-        {
-            id: 2,
-            name: "Aisha Khan",
-            email: "aisha.khan@example.com",
-            phone: "9876543210",
-            age: 24,
-            role: "Developer",
-            profile: "https://i.pinimg.com/564x/aa/8f/c2/aa8fc2c63e5e084e9b7c9f6a43e24cbf.jpg",
-            location: "Delhi, India",
-            gender: "Female",
-            skills: ["Angular", "TypeScript", "JavaScript", "Node.js", "Bootstrap"],
-            education: [{
-                name: "Delhi Technological University",
-                degree: "B.Tech",
-                field: "Information Technology",
-                startYear: "2018",
-                endYear: "2022",
-                location: "Delhi, India"
-            }]
-        },
-        {
-            id: 3,
-            name: "Rahul Sharma",
-            email: "rahul.sharma@example.com",
-            phone: "9998887777",
-            age: 25,
-            role: "Backend Developer",
-            profile: "https://i.pinimg.com/564x/2e/37/24/2e3724d6e68c2a8d0f75fc5ae9e26771.jpg",
-            location: "Mumbai, Maharashtra",
-            gender: "Male",
-            skills: ["Node.js", "Express", "MongoDB", "SQL", "Python"],
-            education: [{
-                name: "Mumbai University",
-                degree: "B.E",
-                field: "Computer Engineering",
-                startYear: "2017",
-                endYear: "2021",
-                location: "Mumbai, Maharashtra"
-            }]
-        },
-        {
-            id: 4,
-            name: "Sneha Gupta",
-            email: "sneha.gupta@example.com",
-            phone: "8887776666",
-            age: 23,
-            role: "Frontend Developer",
-            profile: "https://i.pinimg.com/564x/6b/79/e7/6b79e7cf31f77a3a2a7333e4de41b2a2.jpg",
-            location: "Lucknow, Uttar Pradesh",
-            gender: "Female",
-            skills: ["React", "Redux", "CSS", "HTML", "SASS"],
-            education: [{
-                name: "Amity University",
-                degree: "B.Tech",
-                field: "Software Engineering",
-                startYear: "2019",
-                endYear: "2023",
-                location: "Noida, Uttar Pradesh"
-            }]
-        },
-        {
-            id: 5,
-            name: "Vikram Singh",
-            email: "vikram.singh@example.com",
-            phone: "7776665555",
-            age: 26,
-            role: "Full Stack Developer",
-            profile: "https://i.pinimg.com/564x/fd/57/2d/fd572d86d1f39ae1fa09e9bb20c4af8e.jpg",
-            location: "Jaipur, Rajasthan",
-            gender: "Male",
-            skills: ["React", "Node.js", "Python", "Django", "PostgreSQL"],
-            education: [{
-                name: "JECRC University",
-                degree: "B.Tech",
-                field: "Computer Science",
-                startYear: "2016",
-                endYear: "2020",
-                location: "Jaipur, Rajasthan"
-            }]
-        },
-        {
-            id: 6,
-            name: "Neha Kumari",
-            email: "neha.kumari@example.com",
-            phone: "6665554444",
-            age: 24,
-            role: "UI/UX Designer",
-            profile: "https://i.pinimg.com/564x/f4/9f/bc/f49fbc740dc44f74191ec6f70178a2c5.jpg",
-            location: "Kolkata, West Bengal",
-            gender: "Female",
-            skills: ["Figma", "Adobe XD", "HTML", "CSS", "JavaScript"],
-            education: [{
-                name: "Jadavpur University",
-                degree: "B.Des",
-                field: "Design",
-                startYear: "2017",
-                endYear: "2021",
-                location: "Kolkata, West Bengal"
-            }]
-        },
-        {
-            id: 7,
-            name: "Aman Verma",
-            email: "aman.verma@example.com",
-            phone: "5554443333",
-            age: 28,
-            role: "Data Scientist",
-            profile: "https://i.pinimg.com/564x/c7/65/f7/c765f7405d0f91765e6b3d52bd3b4b78.jpg",
-            location: "Bangalore, Karnataka",
-            gender: "Male",
-            skills: ["Python", "Machine Learning", "TensorFlow", "Pandas", "NumPy"],
-            education: [{
-                name: "IISc Bangalore",
-                degree: "M.Tech",
-                field: "Data Science",
-                startYear: "2018",
-                endYear: "2020",
-                location: "Bangalore, Karnataka"
-            }]
-        },
-        {
-            id: 8,
-            name: "Priya Singh",
-            email: "priya.singh@example.com",
-            phone: "4443332222",
-            age: 21,
-            role: "Intern",
-            profile: "https://i.pinimg.com/564x/44/0c/b3/440cb302f71aef5bc49a0704d5eaaf20.jpg",
-            location: "Chandigarh, Punjab",
-            gender: "Female",
-            skills: ["HTML", "CSS", "JavaScript", "React"],
-            education: [{
-                name: "Punjab University",
-                degree: "BCA",
-                field: "Computer Applications",
-                startYear: "2021",
-                endYear: "2024",
-                location: "Chandigarh, Punjab"
-            }]
-        },
-        {
-            id: 9,
-            name: "Rohit Mehra",
-            email: "rohit.mehra@example.com",
-            phone: "3332221111",
-            age: 27,
-            role: "Software Engineer",
-            profile: "https://i.pinimg.com/564x/8c/8f/4c/8c8f4cb98a769e15ed7d15cbfa52df0f.jpg",
-            location: "Hyderabad, Telangana",
-            gender: "Male",
-            skills: ["Java", "Spring Boot", "MySQL", "AWS", "Docker"],
-            education: [{
-                name: "IIIT Hyderabad",
-                degree: "B.Tech",
-                field: "Computer Science",
-                startYear: "2015",
-                endYear: "2019",
-                location: "Hyderabad, Telangana"
-            }]
-        },
-        {
-            id: 10,
-            name: "Simran Kaur",
-            email: "simran.kaur@example.com",
-            phone: "2221110000",
-            age: 23,
-            role: "Project Manager",
-            profile: "https://i.pinimg.com/564x/b0/b8/e1/b0b8e1f7d37a073d545e6c755321d2e3.jpg",
-            location: "Amritsar, Punjab",
-            gender: "Female",
-            skills: ["Agile", "Scrum", "Leadership", "Communication"],
-            education: [{
-                name: "Lovely Professional University",
-                degree: "MBA",
-                field: "Project Management",
-                startYear: "2019",
-                endYear: "2021",
-                location: "Jalandhar, Punjab"
-            }]
-        }
-    ];
+
 
 
     const scrollToggle = () => {
@@ -304,8 +72,8 @@ export default function Mentors() {
 
 
     return (
-        <>
-            <div id='about' className='min-h-[100vh] pt-[68px] w-[100%] flex justify-evenly flex-wrap bg-[#f5f8f1]'>
+<>
+            <div id='about' className='min-h-[100vh] pt-[68px] px-4 w-[100%] grid md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 sm:grid-cols-2  grid-cols-1  bg-[#f5f8f1]'>
                 {mentors.map((user, index) => {
                     return (
                         <Mentor key={index} user={user} openProfileToggle={openProfileToggle} scrollToggle={scrollToggle} showProfileUpdate={showProfileUpdate} />
@@ -328,8 +96,8 @@ export default function Mentors() {
 
 function Mentor(props) {
     return (
-        <div className='py-4 px-2'>
-            <div className="bg-white rounded-2xl shadow-md min-w-[300px] max-w-[500px] p-6 hover:scale-105 transition-transform flex flex-col items-center shrink-0">
+        <div className='py-4 px-2 h-fit flex justify-center'>
+            <div className="bg-white  rounded-2xl shadow-md md:min-w-[230px]  lg:min-w-[280px] w-[320px] p-6 hover:scale-105 transition-transform flex flex-col items-center ">
                 <div className="w-28 h-28 rounded-full overflow-hidden mb-4">
                     <img
                         src="https://img.freepik.com/free-photo/business-finance-employment-female-successful-entrepreneurs-concept-confident-smiling-asian-businesswoman-office-worker-white-suit-glasses-using-laptop-help-clients_1258-59126.jpg"
@@ -340,13 +108,18 @@ function Mentor(props) {
                 <h2 className="text-xl font-bold">{props.user.name}</h2>
                 <p className="text-gray-600 font-light text-sm text-center mb-6">{props.user.email}</p>
                 <h3 className='text-center mb-4 font-medium text-sm'>{props.user.role}</h3>
-                <div className='flex gap-6'>
-                    <button className='bg-black text-white px-3 py-2 rounded text-sm hover:bg-zinc-700'>Message</button>
+                <div className='flex sm:gap-4 md:gap-2 lg:gap-6 gap-8'>
+                    {props.user.connection
+                    ?
+                    <button className='bg-[#0468BF] text-white md:px-2 md:py-1 px-3 py-2 rounded text-sm '>Connect</button>
+                    :
+                    <button className='bg-[#04AA6D] text-white md:px-2 md:py-1  px-3 py-2 rounded text-sm '>Message</button>}
+                    
                     <button onClick={() => {
                         props.openProfileToggle()
                         props.scrollToggle()
                         props.showProfileUpdate(props.user)
-                    }} className='bg-black text-white px-3 py-2 rounded text-sm hover:bg-zinc-700'>See profile</button>
+                    }} className='bg-[#152340] text-white px-3 py-2 rounded text-sm'>See profile</button>
                 </div>
             </div>
         </div>
