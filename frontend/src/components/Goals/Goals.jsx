@@ -30,7 +30,7 @@ export default function Progress() {
     });
     const [monthlyCompletedTask, setMonthlyCompletedTask] = useState(() => {
         const storedTasks = localStorage.getItem('monthlyCompletedTask');
-        return storedTasks ? (storedTasks) : 0;
+        return storedTasks ? (storedTasks) : Number(0);
     });
 
 
@@ -64,7 +64,7 @@ export default function Progress() {
                 updatedDailyTask[editIndex] = newTask;
                 setDailyTask(updatedDailyTask);
                 if (status === 'completed') {
-                    setDailyCompletedTask(dailyCompletedTask + 1);
+                    setDailyCompletedTask(Number(dailyCompletedTask) + 1);
                 }
                 toast.success('Task updated successfully');
             } else if (editTag === 'monthly') {
@@ -72,7 +72,8 @@ export default function Progress() {
                 updatedMonthlyTask[editIndex] = newTask;
                 setMonthlyTask(updatedMonthlyTask);
                 if (status === 'completed') {
-                    setMonthlyCompletedTask(monthlyCompletedTask + 1);
+                    console.log(monthlyCompletedTask)
+                    setMonthlyCompletedTask(Number(monthlyCompletedTask) + 1);
                 }
                 toast.success('Task updated successfully');
             }
