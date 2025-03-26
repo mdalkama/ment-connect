@@ -29,7 +29,6 @@ export default function Mentors() {
                     const userDoc = await getDoc(doc(db, "users", currentUser.uid));
                     if (userDoc.exists()) {
                         setUser(userDoc.data());
-                        console.log("User data:", userDoc.data());
                     }
                 } catch (error) {
                     console.error("Error fetching user data:", error);

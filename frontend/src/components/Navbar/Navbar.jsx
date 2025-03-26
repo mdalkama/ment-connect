@@ -71,6 +71,7 @@ function Navbar() {
                     {/* Desktop Menu */}
                     <ul className='hidden md:flex gap-4 lg:gap-8 text-l'>
                         <li><Link to="/" className={`font-[400] ${isActiveLink('/')}`}>Home</Link></li>
+                        <li><Link to="/goals" className={`font-[400] ${isActiveLink('/goals')}`}>Goals</Link></li>
                         {role === "mentor" && null}
                         {role === "student" && <li><Link to="/mentors" className={`font-[400] ${isActiveLink('/mentors')}`}>Mentors</Link></li>}
                         {user && (
@@ -87,6 +88,7 @@ function Navbar() {
                     {isOpen && (
                         <ul className='md:hidden absolute top-16 left-0 w-full bg-[#F8F5F1] shadow-md py-2 px-4 z-50 border-black-400 flex flex-col  justify-center items-center'>
                             <li className='py-2'><Link to="/" onClick={() => setIsOpen(false)} className={isActiveLink('/')}>Home</Link></li>
+                            <li className='py-2'><Link to="/goals" onClick={() => setIsOpen(false)} className={isActiveLink('/goals')}>Goals</Link></li>
                             {role === "mentor" && null}
                             {role === "student" && <li className='py-2'><Link to="/mentors" onClick={() => setIsOpen(false)} className={isActiveLink('/mentors')}>Mentors</Link></li>}
                             {user && (

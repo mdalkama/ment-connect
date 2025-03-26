@@ -144,7 +144,7 @@ export default function Progress() {
 
     return (
         <>
-            <div className='min-h-[100vh] bg-[#F8F5F1] w-[100vw]'>
+            <div className='min-h-[100vh] mt-[68px] bg-[#F8F5F1] w-[100vw]'>
                 <div className='p-6'>
                     <div className='w-[100%] flex justify-between items-center py-2 border-b-2 border-black'>
                         <h1 className='md:text-3xl text-2xl font-bold'>My Goals</h1>

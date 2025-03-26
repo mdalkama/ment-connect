@@ -4,8 +4,6 @@ import { MdModeEdit } from "react-icons/md";
 import { auth, db } from "../../firebase";
 import { doc, getDoc, updateDoc, collection, arrayUnion } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
-import Skeleton from "react-loading-skeleton";
-import "react-loading-skeleton/dist/skeleton.css";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";

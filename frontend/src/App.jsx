@@ -11,6 +11,7 @@ import LoginPage from "./components/LoginPage/LoginPage";
 import Message from "./components/Message/Message";
 import Profile from "./components/Profile/Profile";
 import Footer from "./components/Footer/Footer";
+import Goals from "./components/Goals/Goals";
 
 function App() {
   return (
@@ -34,6 +35,7 @@ function AppContent() {
 
       <Routes>
         <Route path="/" element={<Home />} />
+        <Route path="/goals" element={<Goals />} />
         <Route path="/mentors" element={<Mentors />} />
         <Route path="/mentees" element={<Mentees />} />
         <Route path="/message" element={<Message />} />
