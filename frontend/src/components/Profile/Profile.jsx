@@ -4,6 +4,8 @@ import { MdModeEdit } from "react-icons/md";
 import { auth, db } from "../../firebase";
 import { doc, getDoc, updateDoc, collection, arrayUnion } from "firebase/firestore";
 import { onAuthStateChanged } from "firebase/auth";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -14,7 +16,6 @@ export default function Profile() {
 
 
   const [user, setUser] = useState(null);
-  const [loading, setLoading] = useState(true); // Track loading state
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -30,7 +31,6 @@ export default function Profile() {
       } else {
         setUser(null);
       }
-      setLoading(false);
     });
 
     return () => unsubscribe();
@@ -59,20 +59,17 @@ export default function Profile() {
   { scroll ? document.body.style.overflow = "auto" : document.body.style.overflow = "hidden" }
 
 
-  if (loading) {
-    return <p>Loading...</p>;
+  if (!user) {
+    return <p className="mt-[68px] w-screen h-screen flex justify-center items-center text-[2vw] bg-[#F8F5F1]">Loading...</p>;
   }
 
-  if (!user) {
-    return <p className="mt-[100px]">No user data found.</p>;
-  }
 
   return (
     <>
     {
       user
       ?
-      <div className='mt-[68px] p-4 flex flex-col items-center justify-start'>
+          <div className='mt-[68px] p-4 bg-[#F8F5F1] flex flex-col items-center justify-start'>
 
 
       <div id="profile-main" className='px-4 flex flex-col md:flex-row md:h-[200px] w-full md:w-[90%] justify-between items-center'>
@@ -623,3 +620,16 @@ function SkillsAdd(props) {
     </div>
   )
 }
+
+
+
+
+
+
+
+
+
+
+
+
+

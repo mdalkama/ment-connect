@@ -20,7 +20,9 @@ function Message() {
   const ref = useRef();
 
   useEffect(() => {
-    ref.current?.scrollIntoView({ behavior: "smooth" });
+    if (ref.current) {
+      ref.current.scrollIntoView({ behavior: "smooth" });
+    }
   }, [messages]);
 
 useEffect(() => {
@@ -88,6 +90,8 @@ useEffect(() => {
           date: Timestamp.now(),
         }),
       });
+
+
       await updateDoc(doc(db, "userChats", user.userid), {
         [selectedChat[0] + ".lastMessage"]: {
           message,
@@ -101,8 +105,8 @@ useEffect(() => {
         },
         [selectedChat[0] + ".date"]: serverTimestamp(),
       });
-
-      setMessage(""); // Clear input after sending
+      // Clear input after sending
+      setMessage("");
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -114,7 +118,7 @@ useEffect(() => {
         <div className='border-b-[0.5px] border-black text-black shrink-0 h-[60px] w-[100%] flex justify-start items-center pl-4 font-bold'>
           Messaging
         </div>
-
+        {Object.entries(chats)?.length === 0 && <p className='text-[16px] font-bold text-center mt-[25px]'>No Chats Available</p>}
         {Object.entries(chats)?.sort((a, b) => b[1].date - a[1].date).map((chat) => (
           <Chat key={chat[0]} chat = {chat} onClick={() => {
             setSelectedChat(chat);
@@ -144,13 +148,14 @@ useEffect(() => {
                 
                 <p
                   
-                  className={` max-w-[45%] flex items-center px-2 rounded-lg p-3
+                  className={`max-w-[80 lg:max-w-[45%] flex items-center px-2 rounded-lg p-3
                 ${m.senderId === user.userid ? "justify-start justify-self-end bg-[#3CCE92] text-black pr-2 md:pr-20" : "justify-start justify-self-start bg-[#3CCE92] text-black pl-2  md:pr-20 md:pl-4"}`}
                 >
                   {m.text}
                 </p>
               </div>
             ))}
+            <div ref={ref} />
           </div>
 
           {/* Message Input */}
