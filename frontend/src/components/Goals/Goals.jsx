@@ -173,7 +173,7 @@ export default function Progress() {
                                 {
                                     dailyTask.map((task, index) => {
                                         return <div key={index} className='max-sm:flex max-sm:justify-center'>
-                                            <div className='max-sm:w-[300px] max-md:min-w-[240px]  xl:min-w[300px] p-4 rounded-xl flex flex-col gap-1 bg-white shadow-lg'>
+                                            <div className='max-sm:w-[300px] max-md:min-w-[240px]  xl:min-w-[300px] p-4 rounded-xl flex flex-col gap-1 bg-white shadow-lg'>
                                                 <h2 className='text-2xl min-h-8 font-medium'>{task.title}</h2>
                                                 <p className='text-sm h-[60px] flex items-center overflow-hidden'>{task.description}</p>
                                                 <h3 className='font-semibold text-sm'>Status : <span className={` font-semibold ${task.status === 'completed' ? 'text-green-600' : 'text-red-600'}`}>{task.status}</span></h3>

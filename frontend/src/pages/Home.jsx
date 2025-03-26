@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { FaPlus } from "react-icons/fa6";
 import { IoMdClose } from 'react-icons/io';
 import Progress from '../components/Goals/Goals';
+import Features from './Features';
+import Ratings from './Ratings';
+import Questions from './Questions';
 
 
 export default function Home() {
@@ -15,6 +18,9 @@ export default function Home() {
         <p className='text-[7vw] text-center text-white leading-[1] font-bold'>Every student deserves a <br /> champion.</p>
         <button className='mt-8 bg-[#F4CB41] text-black px-8 py-4 rounded-lg font-bold md:h-[70px] md:text-[1.5rem] flex justify-center items-center' ><Link to="/mentors">Search for Mentor</Link></button>
       </div >
+      <Features/>
+      <Ratings/>
+      <Questions/>
     </div >
     
   )
