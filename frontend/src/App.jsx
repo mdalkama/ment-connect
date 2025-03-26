@@ -7,7 +7,6 @@ import Navbar from "./components/Navbar/Navbar";
 import Home from "./pages/Home";
 import Mentors from "./components/Mentors/Mentors";
 import Mentees from "./components/Mentees/Mentees";
-import Contact from "./components/Contact/Contact";
 import LoginPage from "./components/LoginPage/LoginPage";
 import Message from "./components/Message/Message";
 import Profile from "./components/Profile/Profile";
@@ -23,7 +22,6 @@ function App() {
           <Route path="/mentors" element={<Mentors />} />
           <Route path="/mentees" element={<Mentees />} />
           <Route path="/message" element={<Message />} />
-          <Route path="/contact" element={<Contact />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/profile" element={<Profile />} />
         </Routes>

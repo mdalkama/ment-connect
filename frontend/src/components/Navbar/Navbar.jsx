@@ -76,7 +76,6 @@ function Navbar() {
                         {user && (
                             <>
                                 <li><Link to="/message" className={`font-[400] ${isActiveLink('/message')}`}>Message</Link></li>
-                                <li><Link to="/contact" className={`font-[400] ${isActiveLink('/contact')}`}>Contact</Link></li>
                                 <li><Link to="/profile" className={`font-[400] ${isActiveLink('/profile')}`}>Profile</Link></li>
                                 <li><button onClick={handleLogout} className="font-[400] text-red-500">Logout</button></li>
                             </>
@@ -88,12 +87,11 @@ function Navbar() {
                     {isOpen && (
                         <ul className='md:hidden absolute top-16 left-0 w-full bg-[#F8F5F1] shadow-md py-2 px-4 z-50 border-black-400 flex flex-col  justify-center items-center'>
                             <li className='py-2'><Link to="/" onClick={() => setIsOpen(false)} className={isActiveLink('/')}>Home</Link></li>
-                            {role === "mentor" && <li className='py-2'><Link to="/mentees" onClick={() => setIsOpen(false)} className={isActiveLink('/mentees')}>Mentees</Link></li>}
+                            {role === "mentor" && null}
                             {role === "student" && <li className='py-2'><Link to="/mentors" onClick={() => setIsOpen(false)} className={isActiveLink('/mentors')}>Mentors</Link></li>}
                             {user && (
                                 <>
                                     <li className='py-2'><Link to="/message" onClick={() => setIsOpen(false)} className={isActiveLink('/message')}>Message</Link></li>
-                                    <li className='py-2'><Link to="/contact" onClick={() => setIsOpen(false)} className={isActiveLink('/contact')}>Contact</Link></li>
                                     <li className='py-2'><Link to="/profile" onClick={() => setIsOpen(false)} className={isActiveLink('/profile')}>Profile</Link></li>
                                     <li className='py-2 pb-6'><button onClick={() => { setIsOpen(false); handleLogout(); }} className="font-[400] text-red-500">Logout</button></li>
                                 </>
