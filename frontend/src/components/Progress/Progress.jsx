@@ -1,22 +1,39 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { FaPlus } from 'react-icons/fa6';
 import { IoMdClose } from 'react-icons/io';
+import { toast } from 'react-toastify';
 
 export default function Progress() {
 
     const [title, setTitle] = useState('');
     const [description, setDescription] = useState('');
     const [tag, setTag] = useState('daily');
-    const [status, setStatus] = useState('Pending');
-    const [dailyTask, setDailyTask] = useState([]);
-    const [monthlyTask, setMonthlyTask] = useState([]);
+    const [status, setStatus] = useState('pending');
+
+
+    const [dailyTask, setDailyTask] = useState(() => {
+        const storedTasks = localStorage.getItem('dailyTask');
+        return storedTasks ? JSON.parse(storedTasks) : [];
+    });
+
+    const [monthlyTask, setMonthlyTask] = useState(() => {
+        const storedTasks = localStorage.getItem('monthlyTask');
+        return storedTasks ? JSON.parse(storedTasks) : [];
+    });
+
     const [editIndex, setEditIndex] = useState(null);
     const [editTag, setEditTag] = useState(null);
-    const [dailyCompletedTask, setDailyCompletedTask] = useState(0);
-    const [monthlyCompletedTask, setMonthlyCompletedTask] = useState(0);
 
-    console.log(`daily completed task ${dailyCompletedTask}`);
-    // console.log(`monthly completed task ${monthlyCompletedTask}`);
+    const [dailyCompletedTask, setDailyCompletedTask] = useState(() => {
+        const storedTasks = localStorage.getItem('dailyCompletedTask');
+        return storedTasks ? (storedTasks) : 0;
+    });
+    const [monthlyCompletedTask, setMonthlyCompletedTask] = useState(() => {
+        const storedTasks = localStorage.getItem('monthlyCompletedTask');
+        return storedTasks ? (storedTasks) : 0;
+    });
+
+
 
     const editGoal = (task, index, tag) => {
         setTitle(task.title);
@@ -28,6 +45,12 @@ export default function Progress() {
 
     const handleTaskSubmit = (e) => {
         e.preventDefault();
+
+        if (title.trim() === '' || description.trim() === '') {
+            toast.error("Please fill all the fields");
+            return;
+        }
+
         const newTask = {
             title: title,
             description: description,
@@ -43,6 +66,7 @@ export default function Progress() {
                 if (status === 'completed') {
                     setDailyCompletedTask(dailyCompletedTask + 1);
                 }
+                toast.success('Task updated successfully');
             } else if (editTag === 'monthly') {
                 const updatedMonthlyTask = [...monthlyTask];
                 updatedMonthlyTask[editIndex] = newTask;
@@ -50,47 +74,40 @@ export default function Progress() {
                 if (status === 'completed') {
                     setMonthlyCompletedTask(monthlyCompletedTask + 1);
                 }
+                toast.success('Task updated successfully');
             }
             setEditIndex(null);
             setEditTag(null);
         } else {
             if (tag === 'daily') {
                 setDailyTask([...dailyTask, newTask]);
+                toast.success("Task added successfully")
             }
             else if (tag === "monthly") {
                 setMonthlyTask([...monthlyTask, newTask]);
+                toast.success("Task added successfully")
             }
 
         }
-
         setTitle('');
         setDescription('');
         setTag('daily');
-        setStatus('Pending');
+        setStatus('pending');
         setEditIndex(null);
         setEditTag('daily');
 
-    }
-    if (dailyTask.length != 0) {
-        const width = (dailyCompletedTask / dailyTask.length) * 100
-        console.log(width)
-    }
-
-    else {
-        const width = 0;
-        console.log(width)
     }
 
     const handleDeleteDaily = (index) => {
         const updatedDaily = dailyTask.filter((_, i) => i !== index);
         setDailyTask(updatedDaily);
-        setDailyCompletedTask(dailyCompletedTask - 1);
+        if (dailyTask[index].status === 'completed') setDailyCompletedTask(dailyCompletedTask - 1);
     }
 
     const handleDeleteMonthly = (index) => {
         const updatedMonthly = monthlyTask.filter((_, i) => i !== index);
         setMonthlyTask(updatedMonthly);
-        setMonthlyCompletedTask(monthlyCompletedTask - 1);
+        if (monthlyTask[index].status === "completed") setMonthlyCompletedTask(monthlyCompletedTask - 1);
     }
 
     const [openProfile, setOpenProfile] = useState(false);
@@ -110,18 +127,31 @@ export default function Progress() {
     }
 
 
+
+    useEffect(() => {
+        localStorage.setItem('dailyTask', JSON.stringify(dailyTask));},[dailyTask])
+
+        useEffect(() => {
+            localStorage.setItem('monthlyTask', JSON.stringify(monthlyTask));},[monthlyTask])
+
+            useEffect(() => {
+                localStorage.setItem('dailyCompletedTask', (dailyCompletedTask));},[dailyCompletedTask])
+
+                useEffect(() => {
+                    localStorage.setItem('monthlyCompletedTask', (monthlyCompletedTask));},[monthlyCompletedTask])
+
     { scroll ? document.body.style.overflow = "auto" : document.body.style.overflow = "hidden" }
 
     return (
         <>
-            <div className='min-h-[100vh] w-[100vw]'>
+            <div className='min-h-[100vh] bg-[#F8F5F1] w-[100vw]'>
                 <div className='p-6'>
                     <div className='w-[100%] flex justify-between items-center py-2 border-b-2 border-black'>
                         <h1 className='md:text-3xl text-2xl font-bold'>My Goals</h1>
                         <button onClick={() => {
                             openProfileToggle()
                             scrollToggle()
-                        }} className='bg-gray-800 text-white sm:px-4 sm:py-3 px-2 py-1 flex items-center gap-2 md:rounded-lg rounded sm:font-medium text-sm md:text-xl'>
+                        }} className='bg-[#3185FE] text-white sm:px-4 sm:py-3 px-2 py-1 flex items-center gap-2 md:rounded-lg rounded sm:font-medium text-sm md:text-xl'>
                             Add a goal <FaPlus />
                         </button>
                     </div>
@@ -129,10 +159,10 @@ export default function Progress() {
                     <div className='w-full max-h-[100vh] overflow-auto'>
                         <div className='md:flex items-center justify-between mt-10'>
                             <p className='md:text-2xl -mb-[20px] text-lg font-bold text-nowrap'>Daily Task</p>
-                            <div className='md:w-[75%] w-full'>
-                                <h3 className='text-end text-xs font-semibold'>50% out of 100%</h3>
-                                <div className='h-5 w-full bg-gray-200 mt-2 rounded-full'>
-                                    <div style={{ width: `${dailyTask.length > 0 ? dailyCompletedTask / dailyTask.length * 100 : 0}%` }} className="h-full bg-[#04AA6D] rounded-full"></div>
+                            <div className='md:w-[50%] w-full'>
+                                <h3 className='text-end text-xs font-semibold'>{Math.floor(dailyTask.length > 0 ? dailyCompletedTask / dailyTask.length * 100 : 0)}% out of 100%</h3>
+                                <div className='h-4 w-full border-[2px] border-black mt-2 rounded-full overflow-hidden'>
+                                    <div style={{ width: `${dailyTask.length > 0 ? dailyCompletedTask / dailyTask.length * 100 : 0}%` }} className="h-full bg-[#04AA6D] "></div>
                                 </div>
                             </div>
                         </div>
@@ -142,31 +172,37 @@ export default function Progress() {
                                 {
                                     dailyTask.map((task, index) => {
                                         return <div key={index} className='max-sm:flex max-sm:justify-center'>
-                                            <div className='max-sm:w-[300px] max-md:min-w-[240px]  xl:min-w[300px] p-4 rounded-lg flex flex-col gap-1 bg-white shadow-lg'>
-                                                <h2 className='text-2xl font-medium'>{task.title}</h2>
-                                                <h3 className='font-semibold'>Status : <span className='text-red-600 font-medium'>{task.status}</span></h3>
-                                                <p className='text-sm h-[60px] overflow-hidden'>{task.description}</p>
-                                                <div className='mt-2 w-full flex justify-end gap-8'>
+                                            <div className='max-sm:w-[300px] max-md:min-w-[240px]  xl:min-w[300px] p-4 rounded-xl flex flex-col gap-1 bg-white shadow-lg'>
+                                                <h2 className='text-2xl min-h-8 font-medium'>{task.title}</h2>
+                                                <p className='text-sm h-[60px] flex items-center overflow-hidden'>{task.description}</p>
+                                                <h3 className='font-semibold text-sm'>Status : <span className={` font-semibold ${task.status === 'completed' ? 'text-green-600' : 'text-red-600'}`}>{task.status}</span></h3>
+                                                {task.status === "completed" ? <div className='mt-2 w-full flex justify-end gap-4'>
                                                     <button
                                                         onClick={() => {
                                                             handleDeleteDaily(index)
                                                         }}
-                                                        className='bg-[#f44336] font-bold text-sm text-white px-4 py-2 rounded-lg'>Delete</button>
+                                                        className='border-[#3185FE] border font-medium text-sm text-[#3185FE] w-[90px] px-4 py-2 rounded-lg'>Delete</button>
+                                                </div> : <div className='mt-2 w-full flex justify-end gap-4'>
+                                                    <button
+                                                        onClick={() => {
+                                                            handleDeleteDaily(index)
+                                                        }}
+                                                        className='border-[#3185FE] border font-medium text-sm text-[#3185FE] w-[90px] px-4 py-2 rounded-lg'>Delete</button>
                                                     <button
                                                         onClick={() => {
                                                             openEditProfileToggle()
                                                             editGoal(task, index, "daily")
                                                             scrollToggle()
                                                         }}
-                                                        className={`bg-[#04AA6D] font-bold text-sm text-white px-4 py-2 rounded-lg`}>Edit</button>
-                                                </div>
+                                                        className={`bg-[#3185FE] font-medium text-sm text-white w-[90px] px-4 py-2 rounded-lg`}>Edit</button>
+                                                </div>}
                                             </div>
                                         </div>
                                     })
                                 }
                             </div>
                         ) :
-                            <div className='w-full h-[100px] bg-gray-100 rounded-lg md:h-[200px] mt-5 flex items-center justify-center'>
+                            <div className='w-full h-[100px] rounded-lg md:h-[200px] mt-5 flex items-center justify-center'>
                                 <h3 className='md:text-2xl text-lg font-semibold'>No daily task available</h3>
                             </div>}
                     </div>
@@ -174,10 +210,10 @@ export default function Progress() {
                     <div className='w-full max-h-[100vh] overflow-auto'>
                         <div className='md:flex items-center justify-between mt-10'>
                             <p className='md:text-2xl -mb-[20px] text-lg font-bold text-nowrap'>Monthly Task</p>
-                            <div className='md:w-[75%] w-full'>
-                                <h3 className='text-end text-xs font-semibold'>50% out of 100%</h3>
-                                <div className='h-5 w-full bg-gray-200 mt-2 rounded-full'>
-                                    <div className='h-full w-[16%] bg-[#04AA6D] rounded-full'></div>
+                            <div className='md:w-[50%] w-full'>
+                                <h3 className='text-end text-xs font-semibold'>{Math.floor(monthlyTask.length > 0 ? monthlyCompletedTask / monthlyTask.length * 100 : 0)}% out of 100%</h3>
+                                <div className='h-4 w-full border-[2px] overflow-hidden border-black mt-2 rounded-full'>
+                                    <div style={{ width: `${monthlyTask.length > 0 ? monthlyCompletedTask / monthlyTask.length * 100 : 0}%` }} className='h-full w-[16%] bg-[#04AA6D]'></div>
                                 </div>
                             </div>
                         </div>
@@ -188,31 +224,45 @@ export default function Progress() {
                                 {
                                     monthlyTask.map((task, index) => {
                                         return <div key={index} className=' max-sm:flex max-sm:justify-center'>
-                                            <div className='max-sm:w-[300px]  xl:min-w[300px] p-4 rounded-lg flex flex-col gap-1 bg-white shadow-lg'>
-                                                <h2 className='text-2xl font-medium'>{task.title}</h2>
-                                                <h3 className='font-semibold'>Status : <span className='text-red-600 font-medium'>{task.status}</span></h3>
-                                                <p className='text-sm h-[60px] overflow-hidden'>{task.description}</p>
-                                                <div className='mt-2 w-full flex justify-end gap-8'>
+                                            <div className='max-sm:w-[300px] xl:min-w[300px] p-4 rounded-xl flex flex-col gap-1 bg-white shadow-lg'>
+                                                <h2 className='text-2xl min-h-8 font-medium'>{task.title}</h2>
+                                                <p className='text-sm h-[60px] flex items-center overflow-hidden'>{task.description}</p>
+                                                <h3 className='font-semibold text-sm'>Status : <span className={` font-semibold ${task.status === 'completed' ? 'text-green-600' : 'text-red-600'}`}>{task.status}</span></h3>
+                                                {task.status === "completed" ? <div className='mt-2 w-full flex justify-end'>
                                                     <button
                                                         onClick={() => {
                                                             handleDeleteMonthly(index);
                                                         }}
-                                                        className='bg-[#f44336] font-bold text-sm text-white px-4 py-2 rounded-lg'>Delete</button>
-                                                    <button
-                                                        onClick={() => {
-                                                            openEditProfileToggle()
-                                                            editGoal(task, index, "monthly")
-                                                            scrollToggle()
-                                                        }}
-                                                        className='bg-[#04AA6D] font-bold text-sm text-white px-4 py-2 rounded-lg'>Edit</button>
+                                                        className='border-[#3185FE] border font-medium text-sm text-[#3185FE] w-[90px] px-4 py-2 rounded-lg'>
+                                                        Delete
+                                                    </button>
                                                 </div>
+                                                    : <div className='mt-2 w-full flex justify-end gap-8'>
+                                                        <button
+                                                            onClick={() => {
+                                                                handleDeleteMonthly(index);
+                                                            }}
+                                                            className='border-[#3185FE] border font-medium text-sm text-[#3185FE] w-[90px] px-4 py-2 rounded-lg'>
+                                                            Delete
+                                                        </button>
+                                                        <button
+                                                            onClick={() => {
+                                                                openEditProfileToggle()
+                                                                editGoal(task, index, "monthly")
+                                                                scrollToggle()
+                                                            }}
+                                                            className='bg-[#3185FE] border font-medium text-sm text-white w-[90px] px-4 py-2 rounded-lg'>
+                                                            Edit
+                                                        </button>
+                                                    </div>
+                                                }
                                             </div>
                                         </div>
                                     })
                                 }
                             </div>
                         ) :
-                            <div className='w-full bg-gray-100 rounded-lg h-[100px] md:h-[200px] mt-5 flex items-center justify-center'>
+                            <div className='w-full rounded-lg h-[100px] md:h-[200px] mt-5 flex items-center justify-center'>
                                 <h3 className='md:text-2xl text-lg font-semibold'>No monthly task available</h3>
                             </div>}
                     </div>
@@ -229,7 +279,10 @@ export default function Progress() {
                     tag={tag} setTag={setTag}
                     status={status} setStatus={setStatus}
                     handleTaskSubmit={handleTaskSubmit}
-                /> : null}
+                /> : null
+            }
+
+
 
             {isOpenEditProfile ?
                 <EditGoal
@@ -304,7 +357,7 @@ function AddGoal(props) {
                             props.handleTaskSubmit(e)
                             props.openProfileToggle()
                             props.scrollToggle()
-                        }} type='submit' className='mt-8 bg-[#0468BF] text-white p-2 w-[100%] rounded-xl font-semibold'>
+                        }} disabled={!props.title.trim() || !props.description.trim()} type='submit' className={`mt-8 ${(!props.title.trim() || !props.description.trim()) ? 'bg-gray-400 cursor-not-allowed' : 'bg-[#3185FE]'} text-white p-2 w-[100%] rounded-xl font-semibold`}>
                             Add Goal
                         </button>
                     </form>
@@ -322,7 +375,6 @@ function EditGoal(props) {
                 <button
                     onClick={() => {
                         props.openEditProfileToggle()
-                        console.log(props.isOpenEditProfile)
                         props.scrollToggle()
                     }}
                     className='absolute top-0 right-0 h-[65px] w-[65px] rounded-tr-xl text-3xl flex justify-center items-center' >
@@ -372,7 +424,7 @@ function EditGoal(props) {
                             props.openEditProfileToggle();
                             props.scrollToggle()
                             props.handleTaskSubmit(e);
-                        }} type='submit' className='mt-8 bg-[#0468BF] text-white p-2 w-[100%] rounded-xl font-semibold'>
+                        }} type='submit' className='mt-8 bg-[#3185FE] text-white p-2 w-[100%] rounded-xl font-semibold'>
                             Edit Goal
                         </button>
                     </form>
@@ -384,146 +436,3 @@ function EditGoal(props) {
 }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-// const [openProfile, setOpenProfile] = useState(false);
-// const [scroll, setScroll] = useState(true);
-// const [goals, setGoals] = useState([]);
-// const [title, setTitle] = useState('');
-// const [description, setDescription] = useState('');
-// const [status, setStatus] = useState("");
-// const [tag, setTag] = useState("");
-// const [editIndex, setEditIndex] = useState(null);
-// const [totalDayLength, setTotalDayLength] = useState(0);
-
-// const scrollToggle = () => setScroll(!scroll);
-// const openProfileToggle = () => setOpenProfile(!openProfile);
-
-// scroll ? document.body.style.overflow = "auto" : document.body.style.overflow = "hidden";
-
-// const handleSubmit = (e) => {
-//   e.preventDefault();
-
-//   if (!title.trim()) return alert("Task title is required!");
-//   if (editIndex !== null) {
-//     const updatedGoals = [...goals];
-//     updatedGoals[editIndex] = newGoal;
-//     setGoals(updatedGoals);
-//     setEditIndex(null);
-//   } else {
-//     setGoals([...goals, newGoal]);
-//   }
-
-//   resetForm();
-// };
-
-
-
-
-// const newGoal = {
-//   day: [
-//     {
-//       title: "task1",
-//       description: "task2",
-//       status: "pending",
-//       tag: "day",
-//     },
-//     {
-//       title: "task2",
-//       description: "task2",
-//       status: "pending",
-//       tag: "day",
-//     },
-//     {
-//       title: "task3",
-//       description: "task3",
-//       status: "pending",
-//       tag: "day",
-//     },
-//     {
-//       title: "task4",
-//       description: "task4",
-//       status: "pending",
-//       tag: "day",
-//     },
-//     {
-//       title: "task5",
-//       description: "task5",
-//       status: "pending",
-//       tag: "day",
-//     }
-//   ],
-//   month: [
-//     {
-//       title: "task1",
-//       description: "task2",
-//       status: "pending",
-//       tag: "month",
-//     },
-//     {
-//       title: "task2",
-//       description: "task2",
-//       status: "pending",
-//       tag: "month",
-//     },
-//     {
-//       title: "task3",
-//       description: "task3",
-//       status: "pending",
-//       tag: "month",
-//     },
-//     {
-//       title: "task4",
-//       description: "task4",
-//       status: "pending",
-//       tag: "month",
-//     },
-//     {
-//       title: "task5",
-//       description: "task5",
-//       status: "pending",
-//       tag: "month",
-//     }
-//   ]
-// }
-
-
-// const resetForm = () => {
-//   setTitle('');
-//   setDescription('');
-//   setStatus('');
-//   setTag('');
-//   setOpenProfile(false);
-//   setScroll(true);
-// };
-
-// const deleteGoal = (index) => {
-//   const updatedGoals = goals.filter((_, i) => i !== index);
-//   setGoals(updatedGoals);
-// };
-
-// const editGoal = (index) => {
-//   const goal = goals[index];
-//   setTitle(goal.title);
-//   setDescription(goal.description);
-//   setStatus(goal.status);
-//   setTag(goal.tag);
-//   setEditIndex(index);
-//   setOpenProfile(true);
-//   setScroll(false);
-// };
