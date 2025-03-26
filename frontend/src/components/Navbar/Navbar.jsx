@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { RxHamburgerMenu, RxCross2 } from "react-icons/rx";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { auth } from "../../firebase";
+import { auth,db } from "../../firebase";
+import { doc, getDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
@@ -12,14 +13,34 @@ function Navbar() {
     const navigate = useNavigate();
     const [user, setUser] = useState(null);
     const [role, setRole] = useState(null);
+    const [userData, setUserData] = useState(null);
 
     useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
             setUser(currentUser);
-            setRole(localStorage.getItem("userRole") || "student");
         });
         return () => unsubscribe();
     }, []);
+
+        useEffect(() => {
+            const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+                if (currentUser) {
+                    try {
+                        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                        if (userDoc.exists()) {
+                            setUserData(userDoc.data());
+                            setRole(userDoc.data().role); 
+                        }
+                    } catch (error) {
+                        console.error("Error fetching user data:", error);
+                    }
+                } else {
+                    setUserData(null);
+                }
+            });
+    
+            return () => unsubscribe();
+        }, []);
 
     const isActiveLink = (path) => {
         return location.pathname === path
@@ -30,7 +51,6 @@ function Navbar() {
     const handleLogout = async () => {
         try {
             await signOut(auth);
-            localStorage.removeItem("userRole");
             toast.info("Logged out successfully!", { position: "top-right" });
             navigate("/login");
         } catch (error) {
@@ -51,7 +71,7 @@ function Navbar() {
                     {/* Desktop Menu */}
                     <ul className='hidden md:flex gap-4 lg:gap-8 text-l'>
                         <li><Link to="/" className={`font-[400] ${isActiveLink('/')}`}>Home</Link></li>
-                        {role === "mentor" && <li><Link to="/mentees" className={`font-[400] ${isActiveLink('/mentees')}`}>Mentees</Link></li>}
+                        {role === "mentor" && null}
                         {role === "student" && <li><Link to="/mentors" className={`font-[400] ${isActiveLink('/mentors')}`}>Mentors</Link></li>}
                         {user && (
                             <>
