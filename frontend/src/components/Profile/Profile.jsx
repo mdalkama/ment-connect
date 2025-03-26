@@ -120,6 +120,7 @@ function BasicInfo(props) {
       <h3 className='font-semibold py-2 md:py-2 md:font-bold text-2xl w-full text-center border-b-[1px] border-black'>User Info</h3>
       <div className='pl-4 md:pl-4 w-full gap-2 py-4 rounded-lg  bg-[white] flex flex-col justify-start items-start'>
         <p className='font-bold text-sm md:text-xl'>Role: {props.user.role}</p>
+        {props.user.domain !== "" ? <p className='font-bold text-sm md:text-lg'>Domain: {props.user.domain}</p> : null}
         {props.user.location !== "" ? <p className='font-semibold text-sm md:text-lg'>Location: {props.user.location}</p> : null}
         {props.user.gender !== "" ? <p className='font-semibold text-sm md:text-lg'>Gender: {props.user.gender}</p> : null}
         {props.user.age !== "" ? <p className='font-semibold text-sm md:text-lg'>Age: {props.user.age}</p> : null}
@@ -134,10 +135,10 @@ function BasicInfo(props) {
 
 function EditProfile(props) {
   const [name, setName] = useState(props.user.name);
-  const [email, setEmail] = useState(props.user.email);
+  const [domain, setDomain] = useState(props.user.domain);
   const [profile, setProfile] = useState(props.user.profile);
   const [age, setAge] = useState(props.user.age);
-  const [gender, setGender] = useState(props.user.gender);
+  const [gender, setGender] = useState(props.user.gender||"Male");
   const [location, setLocation] = useState(props.user.location);
 
 
@@ -172,7 +173,7 @@ function EditProfile(props) {
       name,
       profile,
       age,
-      email,
+      domain,
       gender,
       location,
     };
@@ -215,17 +216,17 @@ function EditProfile(props) {
 
           {/* email input box */}
           <div className='flex flex-col w-[100%] mt-4'>
-            <label htmlFor="signUpEmail" className='text-s font-normal'> Email </label>
+            <label htmlFor="domain" className='text-s font-normal'> Domain </label>
             <input
-              value={email}
+              value={domain}
               onChange={(e) => {
-                setEmail(e.target.value);
+                setDomain(e.target.value);
               }}
               required
-              type="email"
-              id='signUpEmail'
-              name='email'
-              placeholder='Email' className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
+              type="text"
+              id='domain'
+              name='domain'
+              placeholder='Eg: Software Engineer' className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
           </div>
 
           {/* profile input box */}

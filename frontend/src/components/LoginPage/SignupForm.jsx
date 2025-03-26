@@ -36,6 +36,7 @@ export default function SignupForm(props) {
         location: "",
         gender: "",
         age:"",
+        domain:"",
         education: {
           name: "",
           degree: "",

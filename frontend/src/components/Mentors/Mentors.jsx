@@ -171,7 +171,7 @@ function Mentor(props) {
                  }
                 <h2 className="text-xl font-bold">{props.user.name}</h2>
                 <p className="text-gray-600 font-light text-sm text-center mb-6">{props.user.email}</p>
-                <h3 className='text-center mb-4 font-medium text-sm'>{props.user.role}</h3>
+                <h3 className='text-center mb-4 font-semibold text-lg '>{props.user.domain}</h3>
                 <div className='flex sm:gap-4 md:gap-2 lg:gap-6 gap-8 w-[100%]'>
                     <button onClick={() => {
                         props.openProfileToggle()

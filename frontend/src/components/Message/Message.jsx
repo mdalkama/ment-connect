@@ -16,11 +16,12 @@ function Message() {
   const [user, setUser] = useState(null);
   const [chats, setChats] = useState({});
   const [chatss,setChatss] = useState([])
+
   const ref = useRef();
 
   useEffect(() => {
     ref.current?.scrollIntoView({ behavior: "smooth" });
-  }, [message]);
+  }, [messages]);
 
 useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
@@ -134,26 +135,26 @@ useEffect(() => {
           </div>
 
           {/* Messages Display */}
-          <div className='h-[calc(100vh_-_188px)] w-[100%] overflow-y-auto p-4 flex flex-col gap-2'>
+          <div className='h-[calc(100vh_-_168px)] w-[100%] overflow-y-auto p-4 flex flex-col gap-4'>
             {messages?.map((m) => (
-              <div
+              <div 
                 key={m.id}
               >
+                {m.senderId === user.userid ? <p className="text-xs w-[100%] text-end pr-2"  >{user.name}</p> : <p className="text-xs w-[100%] text-start pr-2"  >{selectedChat[1].userInfo.name}</p>}
+                
                 <p
                   
-                  className={` flex items-center px-2 rounded-lg p-3
-                ${m.senderId === user.userid ? "justify-start justify-self-end bg-green-400 text-black pr-2 md:pr-20" : "justify-start justify-self-start bg-black text-white pl-2 md:pl-20"}`}
+                  className={` max-w-[45%] flex items-center px-2 rounded-lg p-3
+                ${m.senderId === user.userid ? "justify-start justify-self-end bg-[#3CCE92] text-black pr-2 md:pr-20" : "justify-start justify-self-start bg-[#3CCE92] text-black pl-2  md:pr-20 md:pl-4"}`}
                 >
                   {m.text}
                 </p>
               </div>
             ))}
-{/* message will be go here */}
-
           </div>
 
           {/* Message Input */}
-          <div className='h-[80px] w-[100%] flex justify-start items-center'>
+          <div className='h-[60px] w-[100%] flex justify-start items-center'>
             <textarea 
               className='h-[100%] w-[calc(100%_-_56px)] md:w-[calc(100%_-_100px)] border-[1px] border-[#646464] pt-[20px] p-2 outline-0 bg-white' 
               placeholder="Write a message..." 
@@ -209,7 +210,7 @@ function Chat({ chat, onClick, key }) {
       className='border-[#646464] text-[black] h-[92px] w-[100%] gap-4 shrink-0 flex justify-start items-center pl-4 hover:bg-gray-100 transition duration-200 ease-in-out cursor-pointer'
       onClick={onClick}
     >  
-      {chat.profile ? <button
+      {chat[1].userInfo.profile ? <button
         className='h-[56px] w-[56px] rounded-full bg-gray-100 bg-center bg-cover'
         style={{ backgroundImage: `url(${chat[1].userInfo.profile})` }}
 
