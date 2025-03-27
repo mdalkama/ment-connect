@@ -22,6 +22,8 @@ function Navbar() {
         return () => unsubscribe();
     }, []);
 
+// fetch the logged in user data from the firebase
+
         useEffect(() => {
             const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
                 if (currentUser) {
@@ -42,11 +44,15 @@ function Navbar() {
             return () => unsubscribe();
         }, []);
 
+// check if the link is active then it will give this style that element which is active
+
     const isActiveLink = (path) => {
         return location.pathname === path
             ? 'text-[#131417] transition duration-1 border-black border-b-[3px] px-3 py-2'
             : 'text-[#6F757A]';
     };
+
+    // when user click on logout then it will run
 
     const handleLogout = async () => {
         try {
@@ -68,7 +74,7 @@ function Navbar() {
                 </div>
 
                 <div className='flex items-center gap-7'>
-                    {/* Desktop Menu */}
+                    {/* Desktop view Menu */}
                     <ul className='hidden md:flex gap-4 lg:gap-8 text-l'>
                         <li><Link to="/" className={`font-[400] ${isActiveLink('/')}`}>Home</Link></li>
                         <li><Link to="/goals" className={`font-[400] ${isActiveLink('/goals')}`}>Goals</Link></li>
@@ -84,7 +90,7 @@ function Navbar() {
                         {!user && <li><Link to="/login" className={`font-[400] ${isActiveLink('/login')}`}>Login</Link></li>}
                     </ul>
 
-                    {/* Mobile Menu */}
+                    {/* Mobile view Menu */}
                     {isOpen && (
                         <ul className='md:hidden absolute top-16 left-0 w-full bg-[#F8F5F1] shadow-md py-2 px-4 z-50 border-black-400 flex flex-col  justify-center items-center'>
                             <li className='py-2'><Link to="/" onClick={() => setIsOpen(false)} className={isActiveLink('/')}>Home</Link></li>

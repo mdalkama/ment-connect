@@ -68,7 +68,7 @@ export default function SignupForm(props) {
       props.loginStatus();
 
     } catch (error) {
-      toast.error("Sign up failed! " + error.message, { position: "top-right" });
+      toast.error("Sign up failed!", { position: "top-right" });
     }
   };
 

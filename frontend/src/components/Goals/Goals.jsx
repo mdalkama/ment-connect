@@ -10,11 +10,13 @@ export default function Progress() {
     const [tag, setTag] = useState('daily');
     const [status, setStatus] = useState('pending');
 
-
+    // it will fetch the dailyTask data from local storage and set it to the state
     const [dailyTask, setDailyTask] = useState(() => {
         const storedTasks = localStorage.getItem('dailyTask');
         return storedTasks ? JSON.parse(storedTasks) : [];
     });
+
+    // it will fetch the monthlyTask data from local storage and set it to the state
 
     const [monthlyTask, setMonthlyTask] = useState(() => {
         const storedTasks = localStorage.getItem('monthlyTask');
@@ -24,10 +26,15 @@ export default function Progress() {
     const [editIndex, setEditIndex] = useState(null);
     const [editTag, setEditTag] = useState(null);
 
+
+    // it will fetch the completed task data from local storage and set it to the state
     const [dailyCompletedTask, setDailyCompletedTask] = useState(() => {
         const storedTasks = localStorage.getItem('dailyCompletedTask');
         return storedTasks ? (storedTasks) : 0;
     });
+
+    // it will fetch the completed task data from local storage and set it to the state
+
     const [monthlyCompletedTask, setMonthlyCompletedTask] = useState(() => {
         const storedTasks = localStorage.getItem('monthlyCompletedTask');
         return storedTasks ? (storedTasks) : Number(0);
@@ -130,16 +137,20 @@ export default function Progress() {
 
 
     useEffect(() => {
-        localStorage.setItem('dailyTask', JSON.stringify(dailyTask));},[dailyTask])
+        localStorage.setItem('dailyTask', JSON.stringify(dailyTask));
+    }, [dailyTask])
 
-        useEffect(() => {
-            localStorage.setItem('monthlyTask', JSON.stringify(monthlyTask));},[monthlyTask])
+    useEffect(() => {
+        localStorage.setItem('monthlyTask', JSON.stringify(monthlyTask));
+    }, [monthlyTask])
 
-            useEffect(() => {
-                localStorage.setItem('dailyCompletedTask', (dailyCompletedTask));},[dailyCompletedTask])
+    useEffect(() => {
+        localStorage.setItem('dailyCompletedTask', (dailyCompletedTask));
+    }, [dailyCompletedTask])
 
-                useEffect(() => {
-                    localStorage.setItem('monthlyCompletedTask', (monthlyCompletedTask));},[monthlyCompletedTask])
+    useEffect(() => {
+        localStorage.setItem('monthlyCompletedTask', (monthlyCompletedTask));
+    }, [monthlyCompletedTask])
 
     { scroll ? document.body.style.overflow = "auto" : document.body.style.overflow = "hidden" }
 

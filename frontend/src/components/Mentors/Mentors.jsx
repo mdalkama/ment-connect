@@ -40,11 +40,11 @@ export default function Mentors() {
 
         return () => unsubscribe();
     }, []);
-
+// fetch user from database if user role will be mentor
     useEffect(() => {
         const fetchMentors = async () => {
             try {
-                const q = query(collection(db, "users"), where("role", "==", "mentor")); // 🔹 Query mentors
+                const q = query(collection(db, "users"), where("role", "==", "mentor"));
                 const querySnapshot = await getDocs(q);
 
                 const mentorList = querySnapshot.docs.map((doc) => ({
@@ -93,7 +93,7 @@ export default function Mentors() {
                 // Create new chat document
                 await setDoc(chatRef, { messages: [] });
 
-                // Ensure userChats exist before updating
+                // confirms userChats exist before updating
                 await setDoc(doc(db, "userChats", user.userid), {}, { merge: true });
                 await setDoc(doc(db, "userChats", showProfile.userid), {}, { merge: true });
 
@@ -135,7 +135,7 @@ export default function Mentors() {
                     <Mentor
                         key={index}
                         user={user}
-                        setMentor={setMentor}  // Ensure this is passed
+                        setMentor={setMentor}  
                         handleSelectChat={handleSelectChat}
                         openProfileToggle={openProfileToggle}
                         scrollToggle={scrollToggle}
@@ -216,8 +216,8 @@ function Profile(props) {
                         </div>
                         <div className='w-full md:w-[150px] flex justify-center items-center'>
                             <button onClick={() => {
-                                props.setMentor(user); // Set mentor state first
-                                setTimeout(() => props.handleSelectChat(), 0); // Ensure state update before function call
+                                props.setMentor(user); 
+                                setTimeout(() => props.handleSelectChat(), 0); 
                                 props.navigate("/message");
                             }} className=' h-[50px] w-full md:w-[150px] rounded-md mt-4 md:mt-0 font-semibold bg-[#04AA6D] text-white'>Send Message</button>
                         </div>
@@ -264,16 +264,17 @@ function Profile(props) {
                                 ?
                                 <div className='px-2 md:px-4 w-full gap-4 py-8 rounded-lg  bg-[white] flex justify-start items-center flex-wrap'>
                                     {
-                                        skills.map((skills) => {
+                                        skills.map((skills, index) => {
 
                                             return (
-                                                <p className='h-[40px] bg-[#0B65C2] p-2 text-white rounded-lg'>{skills}</p>
+                                                <p key={index} className='h-[40px] bg-[#0B65C2] p-2 text-white rounded-lg'>{skills}</p>
                                             )
                                         })
                                     }
                                 </div>
 
                                 :
+                                // if skill is not adden then it it will show no skill added 
                                 <div className='pb-6 pt-2 md:text-lg md:font-bold text-red-500'>
                                     <p>No skills added</p>
                                 </div>

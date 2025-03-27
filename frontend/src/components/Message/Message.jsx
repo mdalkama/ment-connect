@@ -17,14 +17,16 @@ function Message() {
   const [chats, setChats] = useState({});
   const [chatss,setChatss] = useState([])
 
+  // this is done because of a problem when we send message it do not show the last message so now if user sends any message then then tit will show the last message
   const ref = useRef();
-
   useEffect(() => {
     if (ref.current) {
       ref.current.scrollIntoView({ behavior: "smooth" });
     }
   }, [messages]);
 
+
+  // it fetch the current user data from firebase 
 useEffect(() => {
         const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
             if (currentUser) {
@@ -44,6 +46,9 @@ useEffect(() => {
         return () => unsubscribe();
     }, []);
 
+
+// it will fetch the chats data fof the current loggedin user from firebase
+
   useEffect(() => {
     if (!user || !user.userid) return;
 
@@ -60,14 +65,17 @@ useEffect(() => {
     return () => unsub();
   }, [user]);
 
+
+// it will show the particurlar chat for selected user
+
   useEffect(() => {
-    if (!selectedChat) return; // Prevent running if selectedChat is null
+    if (!selectedChat) return; 
 
     const unSub = onSnapshot(doc(db, "chats", selectedChat[0]), (doc) => {
       if (doc.exists()) {
         setMessages(doc.data().messages);
       } else {
-        setMessages([]); // Set to empty array if no messages found
+        setMessages([]); 
       }
     });
 
@@ -76,15 +84,17 @@ useEffect(() => {
     };
   }, [selectedChat]);
 
+// when we click on messaege send button then it will handle the message sending 
+
   const handleSendMessage = async () => {
     if (!message) return;
 
     try {
-      const chatRef = doc(db, "chats", selectedChat[0]); // Correct doc reference
+      const chatRef = doc(db, "chats", selectedChat[0]); 
 
       await updateDoc(chatRef, {
         messages: arrayUnion({
-          id: uuid(), // Generate a unique ID
+          id: uuid(), 
           text: message,
           senderId: user.userid,
           date: Timestamp.now(),
@@ -118,6 +128,8 @@ useEffect(() => {
         <div className='border-b-[0.5px] border-black text-black shrink-0 h-[60px] w-[100%] flex justify-start items-center pl-4 font-bold'>
           Messaging
         </div>
+        {/* load chays */}
+        {/* if there is no user then it display normal no chat available otheriwse it will fetch the data and show in chats section  */}
         {Object.entries(chats)?.length === 0 && <p className='text-[16px] font-bold text-center mt-[25px]'>No Chats Available</p>}
         {Object.entries(chats)?.sort((a, b) => b[1].date - a[1].date).map((chat) => (
           <Chat key={chat[0]} chat = {chat} onClick={() => {
@@ -127,7 +139,8 @@ useEffect(() => {
         ))}
       </div>
 
-      {/* Chat Window */}
+      {/* chats Window For Private user*/}
+      {/* if user select the people to chat then this windown will open or fetch */}
       {selectedChat 
       ?
         <div id="chat" className='fixed w-[100%] sm:static md:w-[calc(100%_-_400px)] min-h-[calc(100vh_-_68px)] flex flex-col h-[100%] border-[1px] border-gray-300 bg-[#F7F5F0]'>
@@ -197,7 +210,7 @@ useEffect(() => {
             </div>
           </div>
 
-          {/* Messages Display */}
+            {/* if user is not selected then it will show this */}
           <div className='h-[calc(100vh_-_188px)] w-[100%] overflow-y-auto p-4 flex justify-center items-center flex-col gap-2'>
             Open a chat to start messaging.
           </div>
