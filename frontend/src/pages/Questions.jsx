@@ -43,7 +43,7 @@ const Questions = () => {
                 <h1 className='uppercase text-lg md:text-4xl font-bold text-center'>frequently asked questions</h1>
                 <div className='w-full flex flex-col gap-8 mt-8 md:mt-16'>
                     {
-                        mentorQnA.map((item,idx) => (
+                        mentorQnA.map((item, idx) => (
                             <div key={item.id} className='border-2 border-black py-8 px-6'>
                                 <div className='flex items-center justify-between cursor-pointer' onClick={() => toggleQuestion(idx)}>
                                     <h3 className='uppercase md:text-lg font-semibold text-gray-800'>{item.question}</h3>

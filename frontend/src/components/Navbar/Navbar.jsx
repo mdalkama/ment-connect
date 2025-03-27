@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { RxHamburgerMenu, RxCross2 } from "react-icons/rx";
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { signOut, onAuthStateChanged } from "firebase/auth";
-import { auth,db } from "../../firebase";
+import { auth, db } from "../../firebase";
 import { doc, getDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -22,29 +22,29 @@ function Navbar() {
         return () => unsubscribe();
     }, []);
 
-// fetch the logged in user data from the firebase
+    // fetch the logged in user data from the firebase
 
-        useEffect(() => {
-            const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
-                if (currentUser) {
-                    try {
-                        const userDoc = await getDoc(doc(db, "users", currentUser.uid));
-                        if (userDoc.exists()) {
-                            setUserData(userDoc.data());
-                            setRole(userDoc.data().role); 
-                        }
-                    } catch (error) {
-                        console.error("Error fetching user data:", error);
+    useEffect(() => {
+        const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
+            if (currentUser) {
+                try {
+                    const userDoc = await getDoc(doc(db, "users", currentUser.uid));
+                    if (userDoc.exists()) {
+                        setUserData(userDoc.data());
+                        setRole(userDoc.data().role);
                     }
-                } else {
-                    setUserData(null);
+                } catch (error) {
+                    console.error("Error fetching user data:", error);
                 }
-            });
-    
-            return () => unsubscribe();
-        }, []);
+            } else {
+                setUserData(null);
+            }
+        });
 
-// check if the link is active then it will give this style that element which is active
+        return () => unsubscribe();
+    }, []);
+
+    // check if the link is active then it will give this style that element which is active
 
     const isActiveLink = (path) => {
         return location.pathname === path

@@ -40,7 +40,7 @@ export default function Mentors() {
 
         return () => unsubscribe();
     }, []);
-// fetch user from database if user role will be mentor
+    // fetch user from database if user role will be mentor
     useEffect(() => {
         const fetchMentors = async () => {
             try {
@@ -135,7 +135,7 @@ export default function Mentors() {
                     <Mentor
                         key={index}
                         user={user}
-                        setMentor={setMentor}  
+                        setMentor={setMentor}
                         handleSelectChat={handleSelectChat}
                         openProfileToggle={openProfileToggle}
                         scrollToggle={scrollToggle}
@@ -216,8 +216,8 @@ function Profile(props) {
                         </div>
                         <div className='w-full md:w-[150px] flex justify-center items-center'>
                             <button onClick={() => {
-                                props.setMentor(user); 
-                                setTimeout(() => props.handleSelectChat(), 0); 
+                                props.setMentor(user);
+                                setTimeout(() => props.handleSelectChat(), 0);
                                 props.navigate("/message");
                             }} className=' h-[50px] w-full md:w-[150px] rounded-md mt-4 md:mt-0 font-semibold bg-[#04AA6D] text-white'>Send Message</button>
                         </div>

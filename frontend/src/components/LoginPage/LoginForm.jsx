@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BiShow, BiHide } from "react-icons/bi";
 import { useNavigate } from "react-router-dom";
-import { auth, db } from "../../firebase"; 
+import { auth, db } from "../../firebase";
 import { signInWithEmailAndPassword } from "firebase/auth";
 import { doc, getDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
@@ -16,29 +16,29 @@ export default function LoginForm(props) {
 
   const navigate = useNavigate();
 
-const handleLogin = async (e) => {
-  e.preventDefault();
+  const handleLogin = async (e) => {
+    e.preventDefault();
 
-  try {
-    const userCredential = await signInWithEmailAndPassword(auth, email, password);
-    const user = userCredential.user;
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
 
-    // Fetch user data from Firestore
-    const userDoc = await getDoc(doc(db, "users", user.uid));
-    if (userDoc.exists()) {
-      const userData = userDoc.data();
-      // Store user data in localStorage or React Context
-      localStorage.setItem("userData", JSON.stringify(userData));
-      toast.success("Logged in successfully!", { position: "top-right" });
-      navigate("/profile"); // Redirect user
-    } else {
-      console.log("User data not found in Firestore");
+      // Fetch user data from Firestore
+      const userDoc = await getDoc(doc(db, "users", user.uid));
+      if (userDoc.exists()) {
+        const userData = userDoc.data();
+        // Store user data in localStorage or React Context
+        localStorage.setItem("userData", JSON.stringify(userData));
+        toast.success("Logged in successfully!", { position: "top-right" });
+        navigate("/profile"); // Redirect user
+      } else {
+        console.log("User data not found in Firestore");
+      }
+    } catch (error) {
+      setError(error.message);
+      toast.error("Login failed! ", { position: "top-right" });
     }
-  } catch (error) {
-    setError(error.message);
-    toast.error("Login failed! ", { position: "top-right" });
-  }
-};
+  };
 
   return (
     <form onSubmit={handleLogin} className='flex flex-col items-center justify-center grow h-[100%] min-w-[300px] max-w-[60%]'>

@@ -79,10 +79,10 @@ const Ratings = () => {
                             '
                             >
                                 <div className='py-4 px-2'>
-                                <img src="../../public/star.png" alt="" />
-                                <p className='text-center mt-4'>{review.review}</p>
+                                    <img src="../../public/star.png" alt="" />
+                                    <p className='text-center mt-4'>{review.review}</p>
                                 </div>
-                                <div className='p-3 bg-gray-800 gap-6 flex justify-center items-center'> 
+                                <div className='p-3 bg-gray-800 gap-6 flex justify-center items-center'>
                                     <img className='h-[60px] w-[60px] rounded-full' src={review.profilePic} alt="" />
                                     <div className='flex flex-col text-white'>
                                         <h3 className='font-bold'>{review.name}</h3>

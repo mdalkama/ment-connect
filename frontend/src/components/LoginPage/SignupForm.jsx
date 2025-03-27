@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { BiShow, BiHide } from "react-icons/bi";
-import { createUserWithEmailAndPassword,signOut } from "firebase/auth";
+import { createUserWithEmailAndPassword, signOut } from "firebase/auth";
 import { auth, db } from "../../firebase";
 import { useNavigate } from "react-router-dom";
 import { doc, setDoc } from "firebase/firestore";  // Import Firestore
@@ -15,11 +15,11 @@ export default function SignupForm(props) {
   const [password, setPassword] = useState('');
   const [role, setRole] = useState('mentor');
   const navigate = useNavigate();
-  
 
-    const handleSignup = async (e) => {
+
+  const handleSignup = async (e) => {
     e.preventDefault();
-    
+
     try {
       // Create user in Firebase Authentication
       const userCredential = await createUserWithEmailAndPassword(auth, email, password);
@@ -35,15 +35,15 @@ export default function SignupForm(props) {
         profile: "",
         location: "",
         gender: "",
-        age:"",
-        domain:"",
+        age: "",
+        domain: "",
         education: {
           name: "",
           degree: "",
-          field:"",
-          startYear:"",
-          endYear:"",
-          location:""
+          field: "",
+          startYear: "",
+          endYear: "",
+          location: ""
         },
         skills: [],
         dayTask: [],
@@ -51,7 +51,7 @@ export default function SignupForm(props) {
         connections: [],
         chats: []
       });
-      await setDoc(doc(db, "userChats", user.uid),{})
+      await setDoc(doc(db, "userChats", user.uid), {})
 
       toast.success("Sign up successful!", { position: "top-right" });
 
@@ -76,7 +76,7 @@ export default function SignupForm(props) {
     <form
       onSubmit={handleSignup}
       className='mt-[20px] md:flex flex-col items-center justify-center grow h-[100%] min-w-[300px] max-w-[60%]'>
-      
+
       <div className='w-[100%]'>
         <p className='font-bold text-xl'>Get Started</p>
         <p className='mb-6 text-gray-500'>Welcome to MentorConnect - Let's Create your account</p>
@@ -88,9 +88,9 @@ export default function SignupForm(props) {
         {/* Mentor Mentee select */}
         <div className='flex flex-col w-[100%]'>
           <label htmlFor="role" className='text-s font-normal'> Select Role</label>
-          <select 
-            className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' 
-            name="role" 
+          <select
+            className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900'
+            name="role"
             id="role"
             value={role} // Controlled input
             onChange={(e) => setRole(e.target.value)} // Fixed onChange
@@ -124,7 +124,7 @@ export default function SignupForm(props) {
             type="email"
             id='signUpEmail'
             name='email'
-            placeholder='Email' 
+            placeholder='Email'
             className='h-[42px] border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
         </div>
 
@@ -157,8 +157,8 @@ export default function SignupForm(props) {
               className='h-[42px] w-full border-[1px] border-gray-300 p-2 rounded-xl
                       focus:outline-none focus:border-green-900'/>
             <div className='absolute right-3 '>
-              {showPassword ? 
-                <BiHide className='text-2xl cursor-pointer' onClick={() => setShowPassword(!showPassword)} /> : 
+              {showPassword ?
+                <BiHide className='text-2xl cursor-pointer' onClick={() => setShowPassword(!showPassword)} /> :
                 <BiShow className='text-2xl cursor-pointer' onClick={() => setShowPassword(!showPassword)} />}
             </div>
           </div>
@@ -166,7 +166,7 @@ export default function SignupForm(props) {
 
         {/* Signup button */}
         <button type='submit' className='mt-8 bg-green-950 text-white p-2 w-[100%] rounded-xl font-normal'>Sign Up</button>
-        
+
         <p className='text-center mt-3'>Already have an account?
           <span onClick={() => props.loginStatus()} className='text-green-900 cursor-pointer'> Log In</span>
         </p>
