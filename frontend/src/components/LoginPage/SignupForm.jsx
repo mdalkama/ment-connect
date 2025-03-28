@@ -32,6 +32,7 @@ export default function SignupForm(props) {
         email: email,
         phone: phone,
         role: role,
+        verified: false,
         profile: "",
         location: "",
         gender: "",

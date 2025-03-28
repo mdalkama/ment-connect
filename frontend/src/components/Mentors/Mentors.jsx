@@ -1,9 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect,useMemo } from 'react'
 import { IoMdClose } from 'react-icons/io';
-import { collection, doc, query, where, getDoc, getDocs, setDoc, updateDoc, serverTimestamp } from "firebase/firestore";
+import { collection, doc, query, where, getDoc, getDocs, setDoc, updateDoc, serverTimestamp, arrayUnion, onSnapshot } from "firebase/firestore";
 import { db, auth } from "../../firebase";
 import { onAuthStateChanged } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
+import { v4 as uuid } from 'uuid';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 
 export default function Mentors() {
@@ -11,14 +15,35 @@ export default function Mentors() {
     const [user, setUser] = useState({})
     const [userData, setUserData] = useState(null);
     const [mentor, setMentor] = useState({});
+    const [currentMentorSelected, setCurrentMentorSelected] = useState(null);
     const [mentors, setMentors] = useState([]);
     const [openProfile, setOpenProfile] = useState(false);
     const [scroll, setScroll] = useState(true);
     const [showProfile, setShowProfile] = useState({});
     const navigate = useNavigate();
+    const [feedbacks, setFeedbacks] = useState([]);
+    const [isOpenFeedback, setIsOpenFeedback] = useState(false);
+    const [searchMentor, setSearchMentor] = useState("");
+    const [filterMentors,setFilterMentors] = useState([]);
 
+    const openFeedbackToggle = () => {
+        setIsOpenFeedback(!isOpenFeedback);
+    }
 
+    useEffect(() => {
+        if (!user || !user.userid) return;
 
+        const unsub = onSnapshot(doc(db, "feedbacks", showProfile.userid), (docSnap) => {
+            if (docSnap.exists()) {
+                setFeedbacks(docSnap.data());
+            } else {
+                console.warn("No feedback data found.");
+                setFeedbacks([]);
+            }
+        });
+
+        return () => unsub();
+    }, [showProfile]);
     useEffect(() => {
     }, [mentors]);
 
@@ -60,7 +85,12 @@ export default function Mentors() {
         fetchMentors();
     }, []);
 
-
+    function filteredMentors() {
+        return useMemo(
+            () => mentors.filter((mentor) => (searchMentor ? mentor.domain == searchMentor : true)),
+            [mentors, searchMentor]
+        );
+    }
 
     const scrollToggle = () => {
         setScroll(!scroll);
@@ -122,6 +152,37 @@ export default function Mentors() {
     };
 
 
+    const handleSendFeedback = async (feedback) => {
+        if (!showProfile.userid) {
+            console.error("Mentor ID or Feedback Data is missing!");
+            return;
+        }
+
+        try {
+            const feedbackRef = doc(db, "feedbacks", currentMentorSelected);
+
+            // Update or create feedback document
+            await setDoc(
+                feedbackRef,
+                {
+                    feedback: arrayUnion({
+                        id: uuid(),
+                        senderId: user.userid,
+                        name: user.name,
+                        feedbackText: feedback,
+                        profile: "",
+                    })
+                },
+                { merge: true } // Ensures it doesn't overwrite existing feedbacks
+            );
+
+            console.log("Feedback successfully stored!");
+        } catch (err) {
+            console.error("Error storing feedback:", err);
+        }
+    };
+
+
 
 
     { scroll ? document.body.style.overflow = "auto" : document.body.style.overflow = "hidden" }
@@ -129,8 +190,72 @@ export default function Mentors() {
 
     return (
         <>
+            <div className=' bg-[#F8F5F1] mt-[68px] h-[80px] w-full'>
+                <form
+                    onSubmit={(e) => {
+                        e.preventDefault();
 
-            <div id='about' className='min-h-[100vh] pt-[68px] px-4 w-[100%] grid md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 sm:grid-cols-2  grid-cols-1  bg-[#f5f8f1]'>
+                        console.log("All mentors:", mentors); // ✅ Debugging
+
+                        if (mentors.length === 0) {
+                            console.warn("Mentors data not loaded yet.");
+                            return;
+                        }
+
+                        // Normalize both values for an exact match
+                        const mentorFiltered = mentors.filter((mentor) =>
+                            mentor.domain?.toLowerCase().trim() === searchMentor.toLowerCase().trim()
+                        );
+                        setFilterMentors(mentorFiltered);
+
+                        console.log("Filtered Mentors:", mentorFiltered); // ✅ Debug output
+                    }}
+                    className='my-8 md:flex flex-row items-center justify-center grow h-[100%] w-full gap-2'
+                >
+                    <div>
+                        <label htmlFor="role">Select a Role:</label>
+                        <select
+                            id="role"
+                            value={searchMentor}
+                            onChange={(e) => setSearchMentor(e.target.value)}
+                            className="border p-2 rounded-md w-full"
+                        >
+                            <option value="">Select a Role</option>
+                            <option value="MERN Stack Developer">MERN Stack Developer</option>
+                            <option value="Blockchain Developer">Blockchain Developer</option>
+                            <option value="Product Manager">Product Manager</option>
+                            <option value="Event Organizer">Event Organizer</option>
+                            <option value="Android Developer">Android Developer</option>
+                            <option value="React Developer">React Developer</option>
+                        </select>
+                    </div>
+
+                    {/* Search button */}
+                    <button type='submit' className='mt-8 bg-green-950 text-white p-2 w-[200px] rounded-xl font-normal'>
+                        Search Mentor
+                    </button>
+                </form>
+            </div>
+
+            {/* Show mentors section only if filterMentors has data */}
+            {filterMentors?.length > 0 && (
+                <div id='about' className='min-h-[100vh] px-4 w-[100%] grid md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 sm:grid-cols-2 grid-cols-1 bg-[#f5f8f1]'>
+                    {filterMentors.map((user, index) => (
+                        <Mentor
+                            key={index}
+                            user={user}
+                            setMentor={setMentor}
+                            handleSelectChat={handleSelectChat}
+                            openProfileToggle={openProfileToggle}
+                            scrollToggle={scrollToggle}
+                            showProfileUpdate={showProfileUpdate}
+                        />
+                    ))}
+                </div>
+            )}
+
+
+            <div id='about' className='min-h-[100vh]  px-4 w-[100%] grid md:grid-cols-3 lg:grid-cols-3 xl:grid-cols-4 sm:grid-cols-2  grid-cols-1  bg-[#f5f8f1]'>
                 {mentors.map((user, index) => (
                     <Mentor
                         key={index}
@@ -147,11 +272,11 @@ export default function Mentors() {
             </div>
             {openProfile
                 ?
-                <Profile navigate={navigate} setMentor={setMentor} handleSelectChat={handleSelectChat} showProfile={showProfile} openProfileToggle={openProfileToggle} scrollToggle={scrollToggle} />
+                <Profile feedbacks={feedbacks} navigate={navigate} setCurrentMentorSelected={setCurrentMentorSelected} setMentor={setMentor} openFeedbackToggle={openFeedbackToggle} handleSendFeedback={handleSendFeedback} handleSelectChat={handleSelectChat} showProfile={showProfile} openProfileToggle={openProfileToggle} scrollToggle={scrollToggle} />
                 :
                 null
             }
-
+            {isOpenFeedback ? <FeedbackAdd mentor={showProfile.userid} openFeedbackToggle={openFeedbackToggle} handleSendFeedback={handleSendFeedback} /> : null}
         </>
     )
 }
@@ -169,7 +294,13 @@ function Mentor(props) {
                     <div style={{ backgroundImage: `url(https://www.mauicardiovascularsymposium.com/wp-content/uploads/2019/08/dummy-profile-pic-300x300.png)` }} className="w-28 h-28 bg-cover bg-center rounded-full overflow-hidden mb-4">
                     </div>
                 }
-                <h2 className="text-xl font-bold">{props.user.name}</h2>
+                <div className='w-full flex gap-2 justify-center items-center'>
+                    <h2 className="text-xl font-bold">{props.user.name}</h2>
+                    {props.user.verified ? <img className="h-[25px] w-[25px]" src="https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Twitter_Verified_Badge.svg/1200px-Twitter_Verified_Badge.svg.png" alt="" />
+                        : null}
+                </div>
+                {!props.user.verified ? <p className='w-full text-center font-light text-sm text-red-500'>User Not Verified</p>
+                    : null}
                 <p className="text-gray-600 font-light text-sm text-center mb-6">{props.user.email}</p>
                 <h3 className='text-center mb-4 font-semibold text-lg '>{props.user.domain}</h3>
                 <div className='flex sm:gap-4 md:gap-2 lg:gap-6 gap-8 w-[100%]'>
@@ -214,12 +345,17 @@ function Profile(props) {
                                 <p className='text-gray-600 font-medium text-sm md:text-lg'>{user.email}</p>
                             </div>
                         </div>
-                        <div className='w-full md:w-[150px] flex justify-center items-center'>
+                        <div className='w-full md:w-[150px] flex flex-col gap-2 justify-center items-center'>
                             <button onClick={() => {
                                 props.setMentor(user);
                                 setTimeout(() => props.handleSelectChat(), 0);
                                 props.navigate("/message");
                             }} className=' h-[50px] w-full md:w-[150px] rounded-md mt-4 md:mt-0 font-semibold bg-[#04AA6D] text-white'>Send Message</button>
+                            <button onClick={() => {
+                                props.setCurrentMentorSelected(user.userid)
+                                props.openFeedbackToggle();
+                            }} className='h-[30px] p-2 rounded-lg bg-[#0b67c25a] whitespace-nowrap
+                                flex justify-center items-center text-[#0B65C2] font-semibold text-xl text-center'>Send Feedback</button>
                         </div>
 
 
@@ -280,6 +416,9 @@ function Profile(props) {
                                 </div>
                         }
                     </div>
+
+
+                    <Feedback feedbacks={props.feedbacks}/>
                 </div>
 
 
@@ -288,5 +427,158 @@ function Profile(props) {
 
 
         </div >
+    )
+}
+
+function FeedbackAdd(props) {
+    const [feedback, setFeedback] = useState("");
+
+    const handleSubmit = async (e) => {
+        e.preventDefault(); // Prevent page reload
+        props.handleSendFeedback(feedback);
+        props.openFeedbackToggle(feedback);
+        toast.success("Feedback Sent!", {
+                          position: "top-right",
+                          autoClose: 2000,
+                          hideProgressBar: false,
+                          closeOnClick: true,
+                          pauseOnHover: true,
+                          draggable: true,
+                          progress: undefined,
+                        });
+    };
+
+    return (
+        <div className='w-full h-[100vh] fixed top-0 left-0 bg-[#0000005a] flex justify-center items-center z-[100]'>
+            <div className='w-[95%] rounded-lg md:w-[50%] z-[120] bg-white absolute md:top-[50%] md:left-[50%] md:translate-x-[-50%] md:translate-y-[-50%] md:rounded-xl border-[1px] border-[#5d5d5d] flex flex-col justify-start items-center shadow-lg'>
+                <button onClick={() => {
+                    props.openFeedbackToggle(feedback);
+                }} className=' absolute top-0 right-0 h-[65px] w-[65px] rounded-tr-xl text-3xl flex justify-center items-center'><IoMdClose />
+                </button>
+                <form
+                    onSubmit={(e) => {
+                        handleSubmit(e)
+                    }}
+                    className='my-8 md:flex  flex-col items-center justify-start grow h-[100%] w-[90%]'
+                >
+                    <div className='flex flex-col w-[100%] '>
+                        <input
+                            value={feedback}
+                            onChange={(e) => {
+                                setFeedback(e.target.value);
+                            }}
+                            required
+                            type="text"
+                            id='feedback'
+                            name='feedback'
+                            placeholder='Write Feedback....'
+                            className='h-[80px] mt-8 border-[1px] border-gray-300 p-2 rounded-xl focus:outline-none focus:border-green-900' />
+                    </div>
+
+                    {/* save button */}
+                    <button onSubmit={handleSubmit} type='submit' className='mt-8 bg-green-950 text-white p-2 w-[100%] rounded-xl font-normal'>Send feedback</button>
+                </form>
+
+            </div>
+        </div>
+    )
+}
+
+
+const Feedback = (props) => {
+
+    const studentReviews = [
+        {
+            profilePic: "https://randomuser.me/api/portraits/men/32.jpg",
+            name: "Aarav Sharma",
+            city: "Mumbai",
+            review: "This mentorship program has been a game-changer for me. My mentor provided great insights into my career path!"
+        },
+        {
+            profilePic: "https://randomuser.me/api/portraits/women/45.jpg",
+            name: "Priya Verma",
+            city: "Delhi",
+            review: "I learned so much in just a few weeks. My mentor was patient and very knowledgeable."
+        },
+        {
+            profilePic: "https://randomuser.me/api/portraits/men/51.jpg",
+            name: "Rohan Iyer",
+            city: "Bangalore",
+            review: "The guidance I received was invaluable. I now feel confident about my career choices!"
+        },
+        {
+            profilePic: "https://randomuser.me/api/portraits/women/29.jpg",
+            name: "Ananya Nair",
+            city: "Chennai",
+            review: "Amazing experience! My mentor helped me develop crucial skills and set clear career goals."
+        },
+        {
+            profilePic: "https://randomuser.me/api/portraits/men/40.jpg",
+            name: "Vikram Desai",
+            city: "Pune",
+            review: "Highly recommend this platform! My mentor gave me industry insights I wouldn’t have gotten anywhere else."
+        },
+        {
+            profilePic: "https://randomuser.me/api/portraits/women/33.jpg",
+            name: "Neha Gupta",
+            city: "Kolkata",
+            review: "My mentor gave me the confidence to pursue my dreams and provided excellent career advice."
+        },
+        {
+            profilePic: "https://randomuser.me/api/portraits/men/48.jpg",
+            name: "Karan Mehta",
+            city: "Hyderabad",
+            review: "I improved my technical skills significantly with my mentor’s help. The best decision I ever made!"
+        },
+        {
+            profilePic: "https://randomuser.me/api/portraits/women/38.jpg",
+            name: "Simran Kaur",
+            city: "Chandigarh",
+            review: "My mentor was incredibly supportive and helped me refine my resume and interview skills."
+        },
+        {
+            profilePic: "https://randomuser.me/api/portraits/men/57.jpg",
+            name: "Arjun Reddy",
+            city: "Visakhapatnam",
+            review: "I got real-world insights from my mentor, which helped me land a great internship!"
+        },
+        {
+            profilePic: "https://randomuser.me/api/portraits/women/50.jpg",
+            name: "Ishita Sen",
+            city: "Ahmedabad",
+            review: "My mentor’s guidance was invaluable. I now have a clear roadmap for my career!"
+        }
+    ]
+
+
+    return (
+        <div className='min-h-[60vh] w-full py-8 px-6'>
+            <h1 className='text-center text-2xl md:text-4xl font-bold mb-8'>Mentees ratings</h1>
+            <div className='w-full overflow-x-auto no-scrollbar'>
+                <div className='flex space-x-6 px-4 w-max'>
+                    {/* {console.log(props.feedbacks)} */}
+                    {props.feedbacks.feedback?.map((feedback, index) => {
+                        return (
+                            <div key={index}
+                                className='
+                            flex flex-col border-[1px] border-gray-200 justify-between overflow-hidden w-[250px] h-[300px] bg-white rounded-lg 
+                            '
+                            >
+                                <div className='py-4 px-2'>
+                                    <p className='text-center align-center text-l mt-4'>{feedback.feedbackText}</p>
+                                </div>
+                                <div className='p-3 bg-gray-800 gap-6 flex justify-start items-center'>
+                                    {feedback.profile ? <img className='h-[60px] w-[60px] rounded-full' src={feedback.profile} alt="" /> : <img className='h-[60px] w-[60px] rounded-full' src="https://www.mauicardiovascularsymposium.com/wp-content/uploads/2019/08/dummy-profile-pic-300x300.png" alt="" />}
+
+                                    <div className='flex flex-col text-white'>
+                                        <h3 className='font-bold'>{feedback.name}</h3>
+                                    </div>
+                                </div>
+                            </div>
+                        )
+                    })}
+                </div>
+            </div>
+        </div>
     )
 }

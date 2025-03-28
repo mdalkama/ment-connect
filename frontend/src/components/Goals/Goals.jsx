@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaPlus } from 'react-icons/fa6';
 import { IoMdClose } from 'react-icons/io';
 import { toast } from 'react-toastify';
+// import MentorGoals from '../MentorGoals/MentorGoals';
 
 export default function Progress() {
 
@@ -308,6 +309,7 @@ export default function Progress() {
                     handleTaskSubmit={handleTaskSubmit}
                 /> : null
             }
+        {/* <MentorGoals/> */}
         </>
     )
 }
@@ -442,7 +444,7 @@ function EditGoal(props) {
                     </form>
                 </div>
             </div>
-        </div>
+            </div>
 
     )
 }

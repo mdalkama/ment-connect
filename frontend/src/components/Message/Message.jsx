@@ -55,7 +55,6 @@ function Message() {
     const unsub = onSnapshot(doc(db, "userChats", user.userid), (docSnap) => {
       if (docSnap.exists()) {
         setChats(docSnap.data());
-        setChatss(Object.entries(docSnap.data()));
       } else {
         console.warn("No chat data found.");
         setChats({});

@@ -1,6 +1,6 @@
 import React from 'react'
 
-const Ratings = () => {
+const Feedback = () => {
 
     const studentReviews = [
         {
@@ -67,7 +67,7 @@ const Ratings = () => {
 
 
     return (
-        <div className='min-h-[60vh] w-full bg-[#F7F5F0] py-8 px-6'>
+        <div className='min-h-[60vh] w-full py-8 px-6'>
             <h1 className='text-center text-2xl md:text-4xl font-bold mb-8'>Mentees ratings</h1>
             <div className='w-full overflow-x-auto no-scrollbar'>
                 <div className='flex space-x-6 px-4 w-max'>
@@ -75,7 +75,7 @@ const Ratings = () => {
                         return (
                             <div key={index}
                                 className='
-                            flex flex-col justify-between overflow-hidden w-[250px] h-[300px] bg-white rounded-lg 
+                            flex flex-col border-[1px] border-gray-200 justify-between overflow-hidden w-[250px] h-[300px] bg-white rounded-lg 
                             '
                             >
                                 <div className='py-4 px-2'>
@@ -98,4 +98,4 @@ const Ratings = () => {
     )
 }
 
-export default Ratings
+export default Feedback
