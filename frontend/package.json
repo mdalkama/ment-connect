@@ -1,5 +1,5 @@
 {
-  "name": "men-connect",
+  "name": "ment-connect",
   "private": true,
   "proxy": "http://127.0.0.1:5000",
   "version": "0.0.0",
@@ -9,6 +9,7 @@
     "build": "vite build",
     "lint": "eslint .",
     "preview": "vite preview"
+
   },
   "dependencies": {
     "axios": "^1.7.7",
