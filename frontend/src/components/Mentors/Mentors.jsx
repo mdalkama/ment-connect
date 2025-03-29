@@ -1,4 +1,4 @@
-import React, { useState, useEffect,useMemo } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { IoMdClose } from 'react-icons/io';
 import { collection, doc, query, where, getDoc, getDocs, setDoc, updateDoc, serverTimestamp, arrayUnion, onSnapshot } from "firebase/firestore";
 import { db, auth } from "../../firebase";
@@ -24,7 +24,7 @@ export default function Mentors() {
     const [feedbacks, setFeedbacks] = useState([]);
     const [isOpenFeedback, setIsOpenFeedback] = useState(false);
     const [searchMentor, setSearchMentor] = useState("");
-    const [filterMentors,setFilterMentors] = useState([]);
+    const [filterMentors, setFilterMentors] = useState([]);
 
     const openFeedbackToggle = () => {
         setIsOpenFeedback(!isOpenFeedback);
@@ -170,7 +170,7 @@ export default function Mentors() {
                         senderId: user.userid,
                         name: user.name,
                         feedbackText: feedback,
-                        profile: "",
+                        profile: user.profile,
                     })
                 },
                 { merge: true } // Ensures it doesn't overwrite existing feedbacks
@@ -195,7 +195,7 @@ export default function Mentors() {
                     onSubmit={(e) => {
                         e.preventDefault();
 
-                        console.log("All mentors:", mentors); // ✅ Debugging
+                        console.log("All mentors:", mentors);
 
                         if (mentors.length === 0) {
                             console.warn("Mentors data not loaded yet.");
@@ -208,12 +208,11 @@ export default function Mentors() {
                         );
                         setFilterMentors(mentorFiltered);
 
-                        console.log("Filtered Mentors:", mentorFiltered); // ✅ Debug output
+                        console.log("Filtered Mentors:", mentorFiltered);
                     }}
-                    className='my-8 md:flex flex-row items-center justify-center grow h-[100%] w-full gap-2'
+                    className='my-8 flex flex-row items-center  justify-center grow h-[100%] w-full'
                 >
-                    <div>
-                        <label htmlFor="role">Select a Role:</label>
+                    <div className='flex justify-center items-center'>
                         <select
                             id="role"
                             value={searchMentor}
@@ -231,9 +230,11 @@ export default function Mentors() {
                     </div>
 
                     {/* Search button */}
-                    <button type='submit' className='mt-8 bg-green-950 text-white p-2 w-[200px] rounded-xl font-normal'>
-                        Search Mentor
-                    </button>
+                    <div className=' md: mb-6 flex justify-center w-[250px] h-[80px]'>
+                        <button type='submit' className='mt-8 bg-green-950 text-white p-2 w-[200px] h-[45px] rounded-xl font-normal'>
+                            Search Mentor
+                        </button>
+                    </div>
                 </form>
             </div>
 
@@ -418,7 +419,7 @@ function Profile(props) {
                     </div>
 
 
-                    <Feedback feedbacks={props.feedbacks}/>
+                    <Feedback feedbacks={props.feedbacks} />
                 </div>
 
 
@@ -438,14 +439,14 @@ function FeedbackAdd(props) {
         props.handleSendFeedback(feedback);
         props.openFeedbackToggle(feedback);
         toast.success("Feedback Sent!", {
-                          position: "top-right",
-                          autoClose: 2000,
-                          hideProgressBar: false,
-                          closeOnClick: true,
-                          pauseOnHover: true,
-                          draggable: true,
-                          progress: undefined,
-                        });
+            position: "top-right",
+            autoClose: 2000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+        });
     };
 
     return (
@@ -553,7 +554,7 @@ const Feedback = (props) => {
 
     return (
         <div className='min-h-[60vh] w-full py-8 px-6'>
-            <h1 className='text-center text-2xl md:text-4xl font-bold mb-8'>Mentees ratings</h1>
+            <h1 className='text-center text-2xl md:text-4xl font-bold mb-8'>Mentees Feedback</h1>
             <div className='w-full overflow-x-auto no-scrollbar'>
                 <div className='flex space-x-6 px-4 w-max'>
                     {/* {console.log(props.feedbacks)} */}

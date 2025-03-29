@@ -83,7 +83,7 @@ const Feedback = () => {
                                     <p className='text-center mt-4'>{review.review}</p>
                                 </div>
                                 <div className='p-3 bg-gray-800 gap-6 flex justify-center items-center'>
-                                    <img className='h-[60px] w-[60px] rounded-full' src={review.profilePic} alt="" />
+                                    <img className='h-[60px] w-[60px] rounded-full' src={review.profile} alt="" />
                                     <div className='flex flex-col text-white'>
                                         <h3 className='font-bold'>{review.name}</h3>
                                         <p className='text-sm'>{review.city}</p>
