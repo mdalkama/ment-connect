@@ -151,7 +151,7 @@ function Message() {
           </div>
 
           {/* Messages Display */}
-          <div className='h-[calc(100vh_-_188px)]  md:h-[calc(100vh_-_168px)] w-[100%] overflow-y-auto p-4 flex flex-col gap-4'>
+          <div className='h-[calc(100svh_-_188px)]  md:h-[calc(100vh_-_168px)] w-[100%] overflow-y-auto p-4 flex flex-col gap-4'>
 
             {messages?.map((m) => (
               <div
