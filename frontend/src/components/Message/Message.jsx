@@ -162,7 +162,7 @@ function Message() {
                 <p
 
                   className={`max-w-[70%] lg:max-w-[45%] flex items-center px-2 rounded-lg p-3
-                ${m.senderId === user.userid ? "justify-end justify-self-start bg-[#3CCE92] text-black pr-2 md:pr-20" : "justify-start justify-self-start bg-[#3CCE92] text-black pl-2  md:pr-20 md:pl-4"}`}
+                ${m.senderId === user.userid ? "justify-start justify-self-end bg-[#3CCE92] text-black pr-2 md:pr-20" : "justify-start justify-self-start bg-[#3CCE92] text-black pl-2  md:pr-20 md:pl-4"}`}
                 >
                   {m.text}
                 </p>
